@@ -1,0 +1,43 @@
+<html>
+<head>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.0/angular.min.js"></script>
+<title>blah</title>
+<style>
+#smut{
+color: purple;
+
+}
+</style>
+
+<script>
+var app=angular.module("BlahApp",[]);
+
+app.controller("blahController", function($scope, $http) {
+	
+	$scope.store = {};
+	
+	$scope.init = function() {
+		$http.get("/storeInfo",{params:{number:6515}}).success(function(data){
+			$scope.store = data;
+		}).error(function(slut){
+			alert("Fuck you");
+		});
+	}
+	
+});
+
+</script>
+
+</head>
+
+<body ng-app="BlahApp" ng-controller="blahController" ng-init="init()">
+	<h1>Store</h1>
+	<p>Number: {{store.idNumber}}</p>
+	<p>Phone Number: {{store.phoneNumber}}</p>
+	<p>On List: {{store.onList}}</p>
+</body>
+
+
+
+
+</html>
