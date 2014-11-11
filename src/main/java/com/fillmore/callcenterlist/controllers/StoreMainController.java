@@ -12,9 +12,9 @@ import com.fillmore.callcenterlist.repository.StoreRepository;
 
 
 @RestController
-public class BombController {
+public class StoreMainController {
 	
-	private static final Log log = LogFactory.getLog(BombController.class);
+	private static final Log log = LogFactory.getLog(StoreMainController.class);
 	
 	@Autowired
 	private StoreRepository storeRepository;
