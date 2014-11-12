@@ -8,13 +8,14 @@ public class Store {
 	@Id
 	private int idNumber;
 	
-	private String phoneNumber;
+
 	private boolean onList;
 	private boolean top15;
 	private int aGroup;
 	private int bGroup;
 	private int cGroup;
 	private int satGroup;
+	private String state;
 	
 	public int getaGroup() {
 		return aGroup;
@@ -52,17 +53,18 @@ public class Store {
 	public void setTop15(boolean top15) {
 		this.top15 = top15;
 	}
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
+	
 	public boolean isOnList() {
 		return onList;
 	}
 	public void setOnList(boolean onList) {
 		this.onList = onList;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
 	}
 	
 }
