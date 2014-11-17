@@ -1,12 +1,18 @@
 var app = angular.module('CCApp', []);
 
-app.controller("MainController", function($scope){
+app.controller("MainController", function($scope, $http, $interval){
 	$scope.view = "home";
-	$scope.advisoryLevel = "C"; //what group people are in A, B, C, and Sat default is C
-	
-	if(new Date().getDay() == 6){
-		$scope.advisoryLevel = "Sat"; // sets group to sat if it's sat
-	}
+	$scope.requestList =[];
 
+	$scope.getList = function(){
+		$http.get("/getList").success(function(data){
+			$scope.requestList = data;
+			console.log("do");
+		}).error(function(){
+			alert("List Failed")
+		})
+	}
+	
+	$interval($scope.getList, 500);
 	
 });

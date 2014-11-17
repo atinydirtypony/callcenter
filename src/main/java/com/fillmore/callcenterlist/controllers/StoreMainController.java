@@ -71,5 +71,10 @@ public class StoreMainController {
 			return null;
 		}
 	}
+	
+	@RequestMapping("/getList")
+	public List<ReliefRequest> getTheList(){
+		return requestRepository.findBytimeActioned(null);
+	}
 
 }

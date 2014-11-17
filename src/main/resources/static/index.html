@@ -28,7 +28,10 @@
 	</div>
 	
 	<div class="CClist">
-	<h2>The List</h2>
+	<h1>The List</h1>
+	<ol>
+	<li ng-repeat="requests in requestList">{{requests.store.idNumber}}</li>
+	</ol>
 	</div>
 	
 	<div class="content">
