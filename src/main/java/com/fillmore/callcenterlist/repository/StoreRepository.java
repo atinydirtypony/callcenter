@@ -12,5 +12,11 @@ public interface StoreRepository extends CrudRepository<Store, Integer> {
 	
 	public List<Store> findByaGroup(int seat);
 	
+	public List<Store> findBybGroup(int seat);
+	
+	public List<Store> findBycGroup(int seat);
+	
+	public List<Store> findBysatGroup(int seat);
+	
 
 }

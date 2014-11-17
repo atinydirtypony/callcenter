@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="css/callcenter.css">
 	<script type="text/javascript" src="js/callcenter.js"></script>
 	<script type="text/javascript" src="js/editstores.js"></script>
+	<script type="text/javascript" src="js/seat.js"></script>
 	
 	
 </head>
@@ -38,8 +39,15 @@
 		</div>
 		
 		<!-- Seat Content -->
-		<div class = "seat_content" ng-if="view=='seat'">
+		<div class = "seat_content" ng-if="view=='seat'" ng-controller="SeatController">
 		<h1>Seat</h1>
+		<input ng-model="seat"></input>
+		<button class ="btn btn-default" ng-click ="getStores()">Get Stores</button>
+		<div class ="RFStores row">
+		<div class ="col-xs-4" ng-repeat="store in yourStores">
+		<button class="btn btn-default" ng-click ="putOnList(store.idNumber)">{{store.idNumber}}</button>
+		</div>
+		</div>
 		</div>
 		
 		<!-- Admin Content -->
