@@ -38,17 +38,37 @@ public class StoreMainController {
 	}
 
 	@RequestMapping("/addRequest")
-	public void addRequest(@RequestParam("seat") int seatNum, @RequestParam("store") int storeNum, @RequestParam("C35") boolean c35) {
-		ReliefRequest request= new ReliefRequest();
+	public void addRequest(@RequestParam("seat") int seatNum,
+			@RequestParam("store") int storeNum,
+			@RequestParam("C35") boolean c35) {
+		boolean preRequested = false;
+		List<ReliefRequest> currentList = this.getTheList();
+		ReliefRequest request = new ReliefRequest();
 		request.setSeatNum(seatNum);
 		request.setTimeRequested(new Date());
-		if(c35){
+		
+		if (c35) {
 			request.setBathroomBreak(true);
-		}else{
+		} else {
 			request.setStore(storeRepository.findByIdNumber(storeNum));
 		}
-		
-		requestRepository.save(request);
+
+		for (ReliefRequest reqCheck : currentList) {
+			log.info(reqCheck);
+			if (c35) {
+				if (request.getSeatNum() == reqCheck.getSeatNum()) {
+					preRequested = true;
+				}
+			} else {
+				if (request.getStore() == reqCheck.getStore()) {
+					preRequested = true;
+				}
+			}
+		}
+
+		if (preRequested==false) {
+			requestRepository.save(request);
+		}
 
 	}
 
@@ -71,10 +91,19 @@ public class StoreMainController {
 			return null;
 		}
 	}
-	
+
 	@RequestMapping("/getList")
-	public List<ReliefRequest> getTheList(){
+	public List<ReliefRequest> getTheList() {
 		return requestRepository.findBytimeActioned(null);
+	}
+	
+	@RequestMapping("/getRequest")
+	public ReliefRequest getRequest() {
+		List<ReliefRequest> currentList = this.getTheList();
+		ReliefRequest request = currentList.get(0);
+		request.setTimeActioned(new Date());
+		requestRepository.save(request);
+		return request;
 	}
 
 }

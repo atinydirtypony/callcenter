@@ -1,91 +1,105 @@
-<html ng-app ="CCApp">
+<html ng-app="CCApp">
 <head>
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<script type="text/javascript" src="js/angular.min.js"></script>
-	<link rel="stylesheet" href="css/home.css">
-	<script type="text/javascript" src="js/home.js"></script>
-	<link rel="stylesheet" href="css/callcenter.css">
-	<script type="text/javascript" src="js/callcenter.js"></script>
-	<script type="text/javascript" src="js/editstores.js"></script>
-	<script type="text/javascript" src="js/seat.js"></script>
-	
-	
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<script type="text/javascript" src="js/angular.min.js"></script>
+<link rel="stylesheet" href="css/home.css">
+<script type="text/javascript" src="js/home.js"></script>
+<link rel="stylesheet" href="css/callcenter.css">
+<script type="text/javascript" src="js/callcenter.js"></script>
+<script type="text/javascript" src="js/editstores.js"></script>
+<script type="text/javascript" src="js/seat.js"></script>
+
+
 </head>
 
-<body ng-controller = "MainController">
+<body ng-controller="MainController">
 	<div class="header">
 		<h1>Call Center Nerv Center</h1>
 	</div>
-	
-	<div class ="nav">
+
+	<div class="nav">
 		<ul>
-			<li><button class= "btn" type="button" ng-click="view ='home'" ng-class="{'btn-success': view == 'home', 'btn-default': view != 'home'}">Home</button></li>
-			<li><button class= "btn" type="button" ng-click="view = 'seat'" ng-class="{'btn-success': view == 'seat', 'btn-default': view != 'seat'}">Seat</button></li>
-			<li><button class= "btn" type="button" ng-click="view = 'admin'" ng-class="{'btn-success': view == 'admin', 'btn-default': view != 'admin'}">Admin Seat</li>
-			<li><button class= "btn" type="button" ng-click="view = 'edit'" ng-class="{'btn-success': view == 'edit', 'btn-default': view != 'edit'}">Edit Stores</button></li>
-			<li><button class= "btn" type="button" ng-click="view = 'reporting'" ng-class="{'btn-success': view == 'reporting', 'btn-default': view != 'reporting'}">Reporting</button></li>
+			<li><button class="btn" type="button" ng-click="view ='home'"
+					ng-class="{'btn-success': view == 'home', 'btn-default': view != 'home'}">Home</button></li>
+			<li><button class="btn" type="button" ng-click="view = 'seat'"
+					ng-class="{'btn-success': view == 'seat', 'btn-default': view != 'seat'}">Seat</button></li>
+			<li><button class="btn" type="button" ng-click="view = 'admin'"
+					ng-class="{'btn-success': view == 'admin', 'btn-default': view != 'admin'}">Admin
+					Seat</li>
+			<li><button class="btn" type="button" ng-click="view = 'edit'"
+					ng-class="{'btn-success': view == 'edit', 'btn-default': view != 'edit'}">Edit
+					Stores</button></li>
+			<li><button class="btn" type="button"
+					ng-click="view = 'reporting'"
+					ng-class="{'btn-success': view == 'reporting', 'btn-default': view != 'reporting'}">Reporting</button></li>
 		</ul>
 	</div>
-	
-	<div class="CClist">
-	<h1>The List</h1>
-	<ol>
-	<li ng-repeat="requests in requestList">{{requests.store.idNumber}}</li>
-	</ol>
+
+	<div class="CClist col-md-2">
+		<h1>The List</h1>
+		<ol>
+			<li ng-repeat="requests in requestList">{{requests.store.idNumber}}</li>
+		</ol>
 	</div>
-	
-	<div class="content">
-	
+
+	<div class="content col-md-6">
+
 		<!-- Home Content -->
-		<div class = "home_content" ng-if="view=='home'">
-		<h1>Home</h1>
+		<div class="home_content" ng-if="view=='home'">
+			<h1>Home</h1>
 		</div>
-		
+
 		<!-- Seat Content -->
-		<div class = "seat_content" ng-if="view=='seat'" ng-controller="SeatController">
-		<h1>Seat</h1>
-		<input ng-model="seat"></input>
-		<button class ="btn btn-default" ng-click ="getStores()">Get Stores</button>
-		<div class ="RFStores row">
-		<div class ="col-xs-4" ng-repeat="store in yourStores">
-		<button class="btn btn-default" ng-click ="putOnList(store.idNumber)">{{store.idNumber}}</button>
+		<div class="seat_content" ng-if="view=='seat'"
+			ng-controller="SeatController">
+			<h1>Seat</h1>
+			<input ng-model="seat_lookup"></input>
+			<button class="btn btn-default" ng-click="getStores()">Get
+				Stores</button>
+			<div class="RFStores row">
+				<div class="col-xs-4" ng-repeat="store in yourStores">
+					<button class="btn btn-default"
+						ng-click="putOnList(store.idNumber)">{{store.idNumber}}</button>
+				</div>
+			</div>
 		</div>
-		</div>
-		</div>
-		
+
 		<!-- Admin Content -->
-		<div class = "admin_content" ng-if="view=='admin'">
-		<h1>Admin Seat</h1>
+		<div class="admin_content" ng-if="view=='admin'">
+			<h1>Admin Seat</h1>
+			<button>A Group</button>
+			<button>B Group</button>
+			<button>C Group</button>
+			<button>Sat Group</button>
 		</div>
-		
+
 		<!-- Edit Content -->
-		<div class = "edit_content" ng-if="view=='edit'" ng-controller="EditStores">
-		<h1>Edit Stores</h1>
-		<input ng-model="store_id"></input>
-		<button class ="btn btn-default" ng-click ="storeLookUp()">Look-Up</button>
-		<br/>
-		
-		<label>Store Number:</label><input ng-model="store.idNumber"></input><br/>
-		<label>A Group:</label><input ng-model="store.aGroup"></input><br/>
-		<label>B Group:</label><input ng-model="store.bGroup"></input><br/>
-		<label>C Group:</label><input ng-model="store.cGroup"></input><br/>
-		<label>Saturday Group:</label><input ng-model="store.satGroup"></input><br/>
-		<label>State</label><input ng-model="store.state"></input><br/>
-		
-		<button class="btn btn-primary" ng-click="saveStore()">Save</button>
-		
+		<div class="edit_content" ng-if="view=='edit'"
+			ng-controller="EditStores">
+			<h1>Edit Stores</h1>
+			<input ng-model="store_id"></input>
+			<button class="btn btn-default" ng-click="storeLookUp()">Look-Up</button>
+			<br /> <label>Store Number:</label><input ng-model="store.idNumber"></input><br />
+			<label>A Group:</label><input ng-model="store.aGroup"></input><br />
+			<label>B Group:</label><input ng-model="store.bGroup"></input><br />
+			<label>C Group:</label><input ng-model="store.cGroup"></input><br />
+			<label>Saturday Group:</label><input ng-model="store.satGroup"></input><br />
+			<label>State</label><input ng-model="store.state"></input><br />
+
+			<button class="btn btn-primary" ng-click="saveStore()">Save</button>
+
 		</div>
-		
+
 		<!-- Reporting Content -->
-		<div class = "reporting_content" ng-if="view=='reporting'">
-		<h1>Reporting</h1>
+		<div class="reporting_content" ng-if="view=='reporting'">
+			<h1>Reporting</h1>
 		</div>
-	
-		
-		
-		
+
+
+
+
 	</div>
-	
+
 </body>
 
 
