@@ -37,9 +37,12 @@
 
 	<div class="CClist col-md-2">
 		<h1>The List</h1>
-		<ol>
+		<ul>
+			<li ng-repeat="requests in bathroomRequest">C35 @ {{requests.seatNum}}</li>
+		</ul>
+		<ul>
 			<li ng-repeat="requests in requestList">{{requests.store.idNumber}}</li>
-		</ol>
+		</ul>
 	</div>
 
 	<div class="content col-md-6">
