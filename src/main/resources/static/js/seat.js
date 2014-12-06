@@ -8,7 +8,7 @@ app.controller("SeatController", function($scope, $http) {
 	$scope.getStores = function() {
 		
 		var i=$scope.seat_lookup.indexOf("@");
-		console.log($scope.seat_lookup);
+		//console.log($scope.seat_lookup);
 		if(i>=0){
 			realSeat=parseInt($scope.seat_lookup.slice(i+1));
 			workingSeat=parseInt($scope.seat_lookup.slice(0,i));
@@ -59,8 +59,9 @@ app.controller("SeatController", function($scope, $http) {
 	}
 	
 	$scope.C35 = function(){
-		$http.put("/addRequest",{
-			params : {seat : workingSeat, store: store, C35: true}
+		console.log(workingSeat);
+		$http.get("/addRequest",{
+			params: {seat : workingSeat, store: 0, C35: true}
 		}).success(function(data) {
 			alert("C35 Requested");
 		}).error(function() {

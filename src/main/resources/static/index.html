@@ -56,6 +56,7 @@
 			<input ng-model="seat_lookup"></input>
 			<button class="btn btn-default" ng-click="getStores()">Get
 				Stores</button>
+			<button class="btn btn-warning" ng-click="C35()" ng-if="!isRFR">Request C35</button>
 			<div class="RFStores row">
 				<div class="col-xs-4" ng-repeat="store in yourStores">
 					<button class="btn btn-default"

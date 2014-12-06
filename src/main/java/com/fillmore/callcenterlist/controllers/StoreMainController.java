@@ -47,6 +47,8 @@ public class StoreMainController {
 		request.setSeatNum(seatNum);
 		request.setTimeRequested(new Date());
 		
+		//log.info("C35:"+c35);
+		
 		if (c35) {
 			request.setBathroomBreak(true);
 		} else {
@@ -65,6 +67,8 @@ public class StoreMainController {
 				}
 			}
 		}
+		
+		//log.info("Already on:"+preRequested);
 
 		if (preRequested==false) {
 			requestRepository.save(request);
