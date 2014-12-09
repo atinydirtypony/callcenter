@@ -16,7 +16,7 @@ app.controller("MainController", function($scope, $http, $interval){
 					tempBB.push($scope.requestList.splice(i,1)[0]);
 				}
 			}
-			console.log(tempBB);
+			//console.log(tempBB);
 			$scope.bathroomRequest = tempBB;
 		}).error(function(){
 			alert("List Failed")

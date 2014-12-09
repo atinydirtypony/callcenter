@@ -58,7 +58,7 @@ public class StoreMainController {
 		for (ReliefRequest reqCheck : currentList) {
 			log.info(reqCheck);
 			if (c35) {
-				if (request.getSeatNum() == reqCheck.getSeatNum()) {
+				if (request.getSeatNum() == reqCheck.getSeatNum() && reqCheck.isBathroomBreak()) {
 					preRequested = true;
 				}
 			} else {
@@ -103,8 +103,12 @@ public class StoreMainController {
 	
 	@RequestMapping("/getRequest")
 	public ReliefRequest getRequest() {
-		List<ReliefRequest> currentList = this.getTheList();
-		ReliefRequest request = currentList.get(0);
+		List<ReliefRequest> requests =requestRepository.getOldestActiveBathroomBreak();
+		if(requests.isEmpty()){
+			requests = requestRepository.getOldestActiveStoreRequest();
+		}
+		ReliefRequest request = requests.get(0);
+		log.info(request);
 		request.setTimeActioned(new Date());
 		requestRepository.save(request);
 		return request;
