@@ -126,8 +126,8 @@
 					<div class="RFStores" ng-if="!isRFR">
 						<h3 class="page-header">Your Assigned Stores</h3>
 						<div class="row" style="padding-left:30px; padding-right:30px; padding-bottom:30px">
-							<div class="col-xs-3">
-								<button class="btn btn-info" style="margin:10px; width:100%; height:60px;font-size:18pt;" ng-repeat="store in yourStores"
+							<div class="col-xs-12">
+								<button class="btn btn-info" style="margin:10px; width:15%; height:60px;font-size:18pt;" ng-repeat="store in yourStores"
 									ng-click="putOnList(store.idNumber)">{{store.idNumber}}</button>
 							</div>
 						</div>
@@ -138,17 +138,17 @@
 				<!-- Admin Content -->
 				<div ng-controller="AdminController" class="admin_content card" ng-if="view=='admin'">
 					<h2 class="page-header">Call Center Administration</h2>
-					    <div class="col-sm-9">
+					    <div class="col-sm-9" style="padding-bottom:10px">
 					      <input ng-model="cutOff_temp" type="text" class="form-control" id="set_cutOff" placeholder="Cut Off Number">
 					     
 					    </div>
-					    <button ng-click="setCutOff(set_cutOff)">Set Cut Off</button>
+					    <button class = "btn btn-default" ng-click="setCutOff(set_cutOff)" style="margin-bottom:10px">Set Cut Off</button>
 					    <div class="col-sm-9">
 					      <input ng-model="store_num" type="text" class="form-control" id="storeAdd" placeholder="Store ID">
 					      
 					    </div>
-					    <button ng-click="putOnList(store_num);">Add Store To List</button>
-					<p class="lead">Change the currently active seat group</p>
+					    <button class = "btn btn-default" ng-click="putOnList(store_num);">Add Store To List</button>
+					<p class="lead page-header">Change the currently active seat group</p>
 					<div class="row">
 						<button ng-click="changeGroups('A')" class="btn btn-warning col-xs-offset-1 col-xs-4">A
 							Group</button>
