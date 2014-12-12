@@ -8,6 +8,7 @@
 <script type="text/javascript" src="js/callcenter.js"></script>
 <script type="text/javascript" src="js/editstores.js"></script>
 <script type="text/javascript" src="js/seat.js"></script>
+<script type="text/javascript" src="js/admin.js"></script>
 
 
 </head>
@@ -135,15 +136,15 @@
 					<h2>Call Center Administration</h2>
 					<p class="lead">Change the currently active seat group</p>
 					<div class="row">
-						<button class="btn btn-warning col-xs-offset-1 col-xs-4">A
+						<button ng-click="changeGroups('A')" class="btn btn-warning col-xs-offset-1 col-xs-4">A
 							Group</button>
-						<button class="btn btn-warning col-xs-offset-1 col-xs-4">B
+						<button ng-click="changeGroups('B')" class="btn btn-warning col-xs-offset-1 col-xs-4">B
 							Group</button>
 					</div>
 					<div class="row" style="margin-top: 10px; margin-bottom: 30px">
-						<button class="btn btn-warning col-xs-offset-1 col-xs-4">C
+						<button ng-click="changeGroups('C')" class="btn btn-warning col-xs-offset-1 col-xs-4">C
 							Group</button>
-						<button class="btn btn-warning col-xs-offset-1 col-xs-4">Sat
+						<button ng-click="changeGroups('Sat')" class="btn btn-warning col-xs-offset-1 col-xs-4">Sat
 							Group</button>
 					</div>
 				</div>

@@ -176,15 +176,17 @@ public class StoreMainController {
 	
 	@RequestMapping("/changeGroup")
 	public void changeGroups(@RequestParam("group") String group){
-		if( group == "Sat"){
+		log.info(group);
+		if( group.equals("Sat")){
 			advisoryLevel.changeToSat();
-		}else if(group == "A"){
+		}else if(group.equals("A")){
 			advisoryLevel.changeToA();
-		}else if(group == "B"){
+		}else if(group.equals("B")){
 			advisoryLevel.changeToB();
 		}else{
 			advisoryLevel.changeToC();
 		}
+		log.info(advisoryLevel.getLevel());
 	}
 
 }
