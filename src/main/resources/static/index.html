@@ -20,7 +20,7 @@
 		<div class="row eagle-header">
 			<div class="col-xs-12">
 				<div id="logo" class="pull-left"></div>
-				<h1 class="pull-left">Pharmacy Call Center</h1>
+				<h1 class="pull-left hidden-xs">Pharmacy Call Center</h1>
 			</div>
 		</div>
 
@@ -28,7 +28,7 @@
 			<div class="col-xs-12">
 				<div class="navbar navbar-default" role="navigation">
 					<div class="container-fluid">
-						<div class="collapse navbar-collapse"
+						<div class=""
 							id="bs-example-navbar-collapse-1">
 							<ul class="nav navbar-nav">
 								<li ng-click="view ='home'" ng-class="{'active': view == 'home'}"><a
@@ -54,7 +54,7 @@
 
 		<div class="row">
 
-			<div class="col-md-3">
+			<div class="col-sm-4">
 				<div class="row">
 					<div class="col-xs-12">
 						<div class="card info-card">
@@ -71,19 +71,14 @@
 					<div class="col-xs-12">
 						<div class="card">
 							<h3 class="text-center" style="margin-top:5px; text-transform:uppercase;">The List</h3>
-							<ul>
-								<li ng-repeat="requests in bathroomRequest">C35 @
-									{{requests.seatNum}}</li>
-							</ul>
-							<ul>
-								<li ng-repeat="requests in requestList">{{requests.store.idNumber}}</li>
-							</ul>
+							<h5 class="text-center" ng-repeat="requests in bathroomRequest">C35 @ Seat {{requests.seatNum}}</h5>
+							<h5 class="text-center" ng-repeat="requests in requestList">Seat {{requests.store.idNumber}}</h5>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<div class="col-md-9">
+			<div class="col-sm-8">
 
 				<!-- Home Content -->
 				<div class="home_content card" ng-if="view=='home'">
