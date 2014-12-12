@@ -83,7 +83,7 @@
 
 				<!-- Home Content -->
 				<div class="home_content card" ng-if="view=='home'">
-					<h2>Giant Eagle Pharmacy Call Center</h2>
+					<h2 class="page-header">Giant Eagle Pharmacy Call Center</h2>
 					<p class="lead">Lorem ipsum dolor sit amet, consectetur
 						adipiscing elit, sed do eiusmod tempor incididunt ut labore et
 						dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
@@ -99,7 +99,7 @@
 				<!-- Seat Content -->
 				<div class="seat_content card" ng-if="view=='seat'"
 					ng-controller="SeatController">
-					<h2>Tasks <small ng-if="getSeat() != null">Seat {{getSeat()}}</small></h2>
+					<h2 class="page-header">Tasks <small ng-if="getSeat() != null">Seat {{getSeat()}}</small></h2>
 					<p class="lead">General options based on your currently assigned seat role.</p>
 					
 					<div class="row">
@@ -124,7 +124,7 @@
 					</div>
 					
 					<div class="RFStores" ng-if="!isRFR">
-						<h3>Your Assigned Stores</h3>
+						<h3 class="page-header">Your Assigned Stores</h3>
 						<div class="row" style="padding-left:30px; padding-right:30px; padding-bottom:30px">
 								<button class="btn btn-info col-xs-3" style="height:60px; font-size:18pt;" ng-repeat="store in yourStores"
 									ng-click="putOnList(store.idNumber)">{{store.idNumber}}</button>
@@ -135,7 +135,7 @@
 
 				<!-- Admin Content -->
 				<div ng-controller="AdminController" class="admin_content card" ng-if="view=='admin'">
-					<h2>Call Center Administration</h2>
+					<h2 class="page-header">Call Center Administration</h2>
 					    <div class="col-sm-9">
 					      <input ng-model="cutOff_temp" type="text" class="form-control" id="set_cutOff" placeholder="Cut Off Number">
 					      <button ng-click="setCutOff(set_cutOff)">Set Cut Off</button>
@@ -162,7 +162,7 @@
 				<!-- Edit Content -->
 				<div class="edit_content card" ng-if="view=='edit'"
 					ng-controller="EditStores">
-					<h2>Edit Stores</h2>
+					<h2 class="page-header">Edit Stores</h2>
 					
 					<br/>
 					
@@ -231,7 +231,7 @@
 				<!-- Reporting Content -->
 				<div class="reporting_content card"
 					ng-if="view=='reporting'">
-					<h2>Reporting</h2>
+					<h2 class="page-header">Reporting</h2>
 					<p class="lead">All reporting goes here</p>
 				</div>
 
