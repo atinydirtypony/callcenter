@@ -35,7 +35,7 @@
 								<li ng-click="view ='home'" ng-class="{'active': view == 'home'}"><a
 									href="#">Home</a></li>
 								<li ng-click="view ='seat'" ng-class="{'active': view == 'seat'}"><a
-									href="#">Seat</a></li>
+									href="#">Tasks</a></li>
 								<li ng-click="view ='edit'" ng-class="{'active': view == 'edit'}"><a
 									href="#">Edit Stores</a></li>
 								<li ng-click="view ='reporting'"
@@ -99,8 +99,9 @@
 				<!-- Seat Content -->
 				<div class="seat_content card" ng-if="view=='seat'"
 					ng-controller="SeatController">
-					<h2>Store Assignments <small ng-if="getSeat() != null">Seat {{getSeat()}}</small></h2>
-
+					<h2>Tasks <small ng-if="getSeat() != null">Seat {{getSeat()}}</small></h2>
+					<p class="lead">General options based on your currently assigned seat role.</p>
+					
 					<div class="row">
 						<button class="btn btn-danger col-xs-offset-4 col-xs-4" ng-click="C35()"
 							ng-if="!isRFR && getSeat() != null">Request C35</button>
@@ -109,8 +110,9 @@
 						<button class="btn btn-primary col-xs-offset-2 col-xs-3" ng-click="calledRequest()"
 							ng-if="isRFR">Store Call</button>
 					</div>
-						
+					
 					<div ng-if="isRFR">
+						<h3>Your Active Relief Requests</h3>
 						<ul>
 							<li ng-repeat="reliefRequest in yourRequests">{{displayRequest(reliefRequest)}}
 								<button class="btn btn-success"
@@ -120,12 +122,17 @@
 							</li>
 						</ul>
 					</div>
-					<div class="RFStores row">
-						<div class="col-xs-4" ng-repeat="store in yourStores">
-							<button class="btn btn-default"
-								ng-click="putOnList(store.idNumber)">{{store.idNumber}}</button>
+					
+					<div class="RFStores">
+						<h3>Your Assigned Stores</h3>
+						<div class="row">
+							<div class="col-xs-4" ng-repeat="store in yourStores">
+								<button class="btn btn-default"
+									ng-click="putOnList(store.idNumber)">{{store.idNumber}}</button>
+							</div>
 						</div>
 					</div>
+					
 				</div>
 
 				<!-- Admin Content -->
@@ -133,7 +140,7 @@
 					<h2>Call Center Administration</h2>
 					    <div class="col-sm-9">
 					      <input ng-model="cutOff_temp" type="text" class="form-control" id="set_cutOff" placeholder="Cut Off Number">
-					      <button ng-click="setCutOff(cutOff_temp)">Set Cut Off</button>
+					      <button ng-click="setCutOff(set_cutOff)">Set Cut Off</button>
 					    </div>
 					    <div class="col-sm-9">
 					      <input ng-model="store_num" type="text" class="form-control" id="storeAdd" placeholder="Store ID">
