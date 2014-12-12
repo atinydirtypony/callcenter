@@ -154,23 +154,67 @@
 					ng-controller="EditStores">
 					<h2>Edit Stores</h2>
 					
-					<div class="form-group">
+					<br/>
+					
+					<div class="form-group row">
 					   <label for="lookupStore" class="col-sm-3 control-label">Look-Up Store</label>
-					    <div class="col-sm-9">
+					    <div class="col-sm-6">
 					      <input ng-model="store_id" type="text" class="form-control" id="lookupStore" placeholder="Store ID">
 					    </div>
+					    <button class="btn btn-warning col-sm-2" ng-click="storeLookUp()">Look-Up</button>
 					</div>
-					<button class="btn btn-warning" ng-click="storeLookUp()">Look-Up</button>
 					
-					<br /> <label>Store Number:</label><input
-						ng-model="store.idNumber"></input><br /> <label>A Group:</label><input
-						ng-model="store.aGroup"></input><br /> <label>B Group:</label><input
-						ng-model="store.bGroup"></input><br /> <label>C Group:</label><input
-						ng-model="store.cGroup"></input><br /> <label>Saturday
-						Group:</label><input ng-model="store.satGroup"></input><br /> <label>State</label><input
-						ng-model="store.state"></input><br />
+					<br/>
+					
+					<div class="form-group row">
+					   <label for="storeNumber" class="col-sm-3 control-label">Store Number</label>
+					    <div class="col-sm-9">
+					      <input ng-model="store.idNumber" type="text" class="form-control" id="storeNumber">
+					    </div>
+					</div>
+					
+					<div class="form-group row">
+					   <label for="storeAGroup" class="col-sm-3 control-label">A Group</label>
+					    <div class="col-sm-9">
+					      <input ng-model="store.aGroup" type="text" class="form-control" id="storeAGroup">
+					    </div>
+					</div>
+					
+					<div class="form-group row">
+					   <label for="storeBGroup" class="col-sm-3 control-label">B Group</label>
+					    <div class="col-sm-9">
+					      <input ng-model="store.bGroup" type="text" class="form-control" id="storeBGroup">
+					    </div>
+					</div>
+					
+					<div class="form-group row">
+					   <label for="storeCGroup" class="col-sm-3 control-label">C Group</label>
+					    <div class="col-sm-9">
+					      <input ng-model="store.cGroup" type="text" class="form-control" id="storeCGroup">
+					    </div>
+					</div>
+					
+					<div class="form-group row">
+					   <label for="storeSatGroup" class="col-sm-3 control-label">Saturday Group</label>
+					    <div class="col-sm-9">
+					      <input ng-model="store.satGroup" type="text" class="form-control" id="storeSatGroup">
+					    </div>
+					</div>
+					
+					<div class="form-group row">
+					   <label for="storeState" class="col-sm-3 control-label">State</label>
+					    <div class="col-sm-9">
+					      <input ng-model="store.state" type="text" class="form-control" id="storeState">
+					    </div>
+					</div>
+					
+					<br/>
 
-					<button class="btn btn-primary" ng-click="saveStore()">Save</button>
+					<div class="row">
+						<button class="btn btn-primary col-xs-6 col-xs-offset-3" ng-click="saveStore()">Save Store</button>
+					</div>
+					
+					<br/>
 
 				</div>
 
