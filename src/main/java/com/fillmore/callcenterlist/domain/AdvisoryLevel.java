@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 public class AdvisoryLevel {
 	private String level = "C";
 	private int cutOff = 40;
+	private int timeTillComplete = 0;
 
 	public void changeToA() {
 		this.level = "A";
@@ -27,7 +28,7 @@ public class AdvisoryLevel {
 		this.level = "Sat";
 	}
 	
-	public String adviseLevel(){
+	public String getLevel(){
 		return this.level;
 	}
 	
@@ -48,7 +49,25 @@ public class AdvisoryLevel {
 	}
 	
 	public void cutOffCheck(List<ReliefRequest> theList){
-		
+		if(theList.size() >= 15 ){
+			cutOff += 5;
+			if(cutOff >65 ){
+				cutOff = 65;
+			}
+		}else if(theList.size() <=5){
+			cutOff -= 5;
+			if(cutOff <5 ){
+				cutOff = 5;
+			}
+		}
+	}
+
+	public int getTimeTillComplete() {
+		return timeTillComplete;
+	}
+
+	public void setTimeTillComplete(int timeTillComplete) {
+		this.timeTillComplete = timeTillComplete;
 	}
 
 }

@@ -68,6 +68,9 @@
 
 		<div class="CClist col-md-3">
 			<h1>The List</h1>
+			<h4>{{advisoryLevel.level}} Groups</h4>
+			<h4>Cut Off: +{{advisoryLevel.cutOff}}</h4>
+			<h4>Est. Completiong Time: {{advisoryLevel.timeTillComplete}} Min</h4>
 			<ul>
 				<li ng-repeat="requests in bathroomRequest">C35 @
 					{{requests.seatNum}}</li>

@@ -83,13 +83,13 @@ public class StoreMainController {
 
 	@RequestMapping("/seatStores")
 	public List<Store> storesBySeat(@RequestParam("seat") String seat_num) {
-		if (advisoryLevel.adviseLevel() == "A") {
+		if (advisoryLevel.getLevel() == "A") {
 			return storeRepository.findByaGroup(seat_num);
-		} else if (advisoryLevel.adviseLevel() == "B") {
+		} else if (advisoryLevel.getLevel() == "B") {
 			return storeRepository.findBybGroup(seat_num);
-		} else if (advisoryLevel.adviseLevel() == "C") {
+		} else if (advisoryLevel.getLevel() == "C") {
 			return storeRepository.findBycGroup(seat_num);
-		} else if (advisoryLevel.adviseLevel() == "Sat") {
+		} else if (advisoryLevel.getLevel() == "Sat") {
 			return storeRepository.findBysatGroup(seat_num);
 		} else {
 			return null;
@@ -166,6 +166,11 @@ public class StoreMainController {
 	@RequestMapping("/getJavaDate")
 	public Date sendJavaDate(){
 		return new Date();
+	}
+	
+	@RequestMapping("/getAdvisory")
+	public AdvisoryLevel getAdvisory(){
+		return advisoryLevel;
 	}
 
 }
