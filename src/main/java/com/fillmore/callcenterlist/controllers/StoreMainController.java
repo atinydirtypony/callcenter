@@ -176,7 +176,7 @@ public class StoreMainController {
 	
 	@RequestMapping("/changeGroup")
 	public void changeGroups(@RequestParam("group") String group){
-		log.info(group);
+		//log.info(group);
 		if( group.equals("Sat")){
 			advisoryLevel.changeToSat();
 		}else if(group.equals("A")){
@@ -186,7 +186,12 @@ public class StoreMainController {
 		}else{
 			advisoryLevel.changeToC();
 		}
-		log.info(advisoryLevel.getLevel());
+		//log.info(advisoryLevel.getLevel());
+	}
+	
+	@RequestMapping("/setCutOff")
+	public void setCutOff(@RequestParam("number") int num){
+		advisoryLevel.setCutOff(num);
 	}
 
 }
