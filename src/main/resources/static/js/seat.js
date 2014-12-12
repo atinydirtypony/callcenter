@@ -1,4 +1,4 @@
-app.controller("SeatController", function($scope, $http) {
+app.controller("SeatController", function($scope, $http, $interval) {
 	$scope.seat_lookup = null;
 	$scope.yourStores = [];
 	$scope.isRFR = false;
@@ -17,9 +17,9 @@ app.controller("SeatController", function($scope, $http) {
 	}
 	
 	$scope.setSeat = function(){
-		//console.log("***");
+		// console.log("***");
 		$scope.seat_lookup = prompt("What seat are you at?");
-		//console.log("***");
+		// console.log("***");
 
 		var i=$scope.seat_lookup.indexOf("@");
 		console.log($scope.seat_lookup);
@@ -27,13 +27,14 @@ app.controller("SeatController", function($scope, $http) {
 			realSeat=parseInt($scope.seat_lookup.slice(i+1));
 			workingSeat=parseInt($scope.seat_lookup.slice(0,i));
 			$scope.seat_lookup=null;
-			//console.log(workingSeat+"+"+realSeat);
+			// console.log(workingSeat+"+"+realSeat);
 		}else{
 			workingSeat=parseInt($scope.seat_lookup);
 			realSeat=parseInt($scope.seat_lookup);
 			console.log(workingSeat+"+"+realSeat);
 		}
 	}
+	$scope.setSeat();
 	
 	$scope.getStores = function() {
 
@@ -57,9 +58,9 @@ app.controller("SeatController", function($scope, $http) {
 
 	}
 	
-	//puts a store request on list takes and INT!!!!
+	// puts a store request on list takes and INT!!!!
 	$scope.putOnList = function(store) {
-		//console.log(realSeat);
+		// console.log(realSeat);
 		$http.get("/addRequest",{
 			params : {seat : realSeat ,store: store, C35: false}
 				
@@ -70,14 +71,22 @@ app.controller("SeatController", function($scope, $http) {
 		})
 		$scope.getList();
 	}
+	$scope.getYourRequests =function(){
+		$http.get("/getActiveRequests", {params: {seat :realSeat} }).success(function(data) {
+			$scope.yourRequests=data;
+		}).error(function() {
+			alert("Request Failed");
+		})
+	}
 	
 	$scope.rfCall = function(){
-		$http.get("/getRequest").success(function(data) {
-			$scope.yourRequests.push(data);
+		$http.get("/getRequest", {params: {seat :realSeat} }).success(function(data) {
+			$scope.getYourRequests();
 		}).error(function() {
 			alert("Request Failed");
 		})
 		$scope.getList();
+		$scope.getYourRequests();
 	}
 	
 	$scope.displayRequest =function(request){
@@ -88,12 +97,9 @@ app.controller("SeatController", function($scope, $http) {
 		}
 	}
 	
-	$scope.rfFinish = function(){
-		$scope.getList();
-	}
 	
 	$scope.C35 = function(){
-		//console.log(realSeat);
+		// console.log(realSeat);
 		$http.get("/addRequest",{
 			params: {seat : realSeat, store: 0, C35: true}
 		}).success(function(data) {
@@ -103,5 +109,53 @@ app.controller("SeatController", function($scope, $http) {
 		})
 		$scope.getList();
 	}
+	
+	$scope.finishRequest = function(request){
+		$http.get("/finishRequest",{
+			params: {seat : realSeat, id: request.id}
+		}).success(function(data) {
+			alert("TaskCompleted");
+		}).error(function() {
+			alert("Request Failed");
+		})
+		$scope.getYourRequests();
+	}
+	
+	$scope.putBackRequest = function(request){
+		console.log(request.store)
+		$http.get("/putBackRequest",{
+			params: { requestSeat: realSeat, id: request.id}
+		}).success(function(){
+			alert("Task Returned");
+		}).error(function(){
+			alert("Request failed");
+		})
+		$scope.getYourRequests();
+		$scope.getList();
+		
+	}
+	
+	$scope.calledRequest = function(){
+		store_num = prompt("What store called?");
+		$http.get("/calledRequest",{
+			params: {store: store_num, seat: realSeat}
+		}).success(function(){
+			alert("Call Added");
+		}).error(function(){
+			alert("Request failed");
+		})
+	}
+	
+	$scope.seatUpdater = function(){
+		if($scope.isRFR){
+			$scope.getYourRequests();
+		}else{
+			$scope.getStores();
+		}
+	}
+	
+	$scope.seatUpdater();
+	$interval($scope.seatUpdater, 10000)
+	
 
 });

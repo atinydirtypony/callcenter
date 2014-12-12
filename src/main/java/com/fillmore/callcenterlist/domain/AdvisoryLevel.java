@@ -1,12 +1,15 @@
 package com.fillmore.callcenterlist.domain;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
 @Component 
 public class AdvisoryLevel {
 	private String level = "C";
+	private int cutOff = 40;
 
 	public void changeToA() {
 		this.level = "A";
@@ -34,6 +37,18 @@ public class AdvisoryLevel {
 		}else{
 			this.level = "C";
 		}
+	}
+
+	public int getCutOff() {
+		return cutOff;
+	}
+
+	public void setCutOff(int cutOff) {
+		this.cutOff = cutOff;
+	}
+	
+	public void cutOffCheck(List<ReliefRequest> theList){
+		
 	}
 
 }

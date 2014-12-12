@@ -54,21 +54,23 @@
 
 		<!-- Seat Content -->
 		<div class="seat_content" ng-if="view=='seat'"
-			ng-controller="SeatController" ng-init="setSeat(); getStores()">
+			ng-controller="SeatController">
 			<h1>DV2's</h1>
-			<h3>Seat: {{getSeat()}}</h3>
+			<h3 ng-if="getSeat() != null">Seat: {{getSeat()}}</h3>
 			
-			<!--  ****Commented out seat look up****
-			<input ng-model="seat_lookup"></input>
-			<button class="btn btn-default" ng-click="getStores()">Get
-				Stores</button>-->
+			<!--  ****Commented out seat look up**** 
+			<input ng-model="seat_lookup"></input>-->
+			<button class="btn btn-default" ng-click="setSeat()">Set
+				Seat</button>
 					
 			<button class="btn btn-danger" ng-click="C35()" ng-if="!isRFR && getSeat() != null">Request C35</button>
 			<button class="btn btn-warning" ng-click="rfCall()" ng-if="isRFR">Get Request</button>
+			<button class="btn btn-primary" ng-click="calledRequest()" ng-if="isRFR">Store Call</button>
 			<div ng-if="isRFR">
 				<ul>
 					<li ng-repeat="reliefRequest in yourRequests">{{displayRequest(reliefRequest)}}
-					<button>Finish</button>
+					<button class="btn btn-success" ng-click="finishRequest(reliefRequest)">Finish</button>
+					<button class="btn btn-danger"ng-click="putBackRequest(reliefRequest)">Put Back</button>
 					</li>
 				</ul>
 			</div>

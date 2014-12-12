@@ -14,9 +14,23 @@ public class ReliefRequest {
 	
 	@OneToOne
 	private Store store;
-	private int seatNum;
+	private String seatNum;
 	private Date timeRequested;
+	private String actionSeat;
 	private Date timeActioned;
+	private String fufillmentSeat;
+	public String getActionSeat() {
+		return actionSeat;
+	}
+	public void setActionSeat(String actionSeat) {
+		this.actionSeat = actionSeat;
+	}
+	public String getFufillmentSeat() {
+		return fufillmentSeat;
+	}
+	public void setFufillmentSeat(String fufillmentSeat) {
+		this.fufillmentSeat = fufillmentSeat;
+	}
 	private Date timeFufilled;
 	@Id
 	@GeneratedValue
@@ -41,10 +55,10 @@ public class ReliefRequest {
 	public void setStore(Store store) {
 		this.store = store;
 	}
-	public int getSeatNum() {
+	public String getSeatNum() {
 		return seatNum;
 	}
-	public void setSeatNum(int seatNum) {
+	public void setSeatNum(String seatNum) {
 		this.seatNum = seatNum;
 	}
 	public Date getTimeRequested() {

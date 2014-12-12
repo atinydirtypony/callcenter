@@ -38,11 +38,11 @@ public class StoreMainController {
 	}
 
 	@RequestMapping("/addRequest")
-	public void addRequest(@RequestParam("seat") int seatNum,
+	public void addRequest(@RequestParam("seat") String seatNum,
 			@RequestParam("store") int storeNum,
 			@RequestParam("C35") boolean c35) {
 		boolean preRequested = false;
-		List<ReliefRequest> currentList = this.getTheList();
+		List<ReliefRequest> currentList = requestRepository.findBytimeFufilled(null);
 		ReliefRequest request = new ReliefRequest();
 		request.setSeatNum(seatNum);
 		request.setTimeRequested(new Date());
@@ -82,7 +82,7 @@ public class StoreMainController {
 	}
 
 	@RequestMapping("/seatStores")
-	public List<Store> storesBySeat(@RequestParam("seat") int seat_num) {
+	public List<Store> storesBySeat(@RequestParam("seat") String seat_num) {
 		if (advisoryLevel.adviseLevel() == "A") {
 			return storeRepository.findByaGroup(seat_num);
 		} else if (advisoryLevel.adviseLevel() == "B") {
@@ -102,16 +102,70 @@ public class StoreMainController {
 	}
 	
 	@RequestMapping("/getRequest")
-	public ReliefRequest getRequest() {
+	public ReliefRequest getRequest(@RequestParam("seat") String seat_num) {
 		List<ReliefRequest> requests =requestRepository.getOldestActiveBathroomBreak();
 		if(requests.isEmpty()){
 			requests = requestRepository.getOldestActiveStoreRequest();
 		}
 		ReliefRequest request = requests.get(0);
 		log.info(request);
+		request.setActionSeat(seat_num);
 		request.setTimeActioned(new Date());
 		requestRepository.save(request);
 		return request;
+	}
+	
+
+	@RequestMapping("/getActiveRequests")
+	public List<ReliefRequest> getActiveRequest(@RequestParam("seat") String seat_num) {
+		return requestRepository.findBytimeFufilledAndActionSeat(null, seat_num);
+	}
+	
+	@RequestMapping("/finishRequest")
+	public void finishRequest(@RequestParam("id") int id_num, @RequestParam("seat") String seat_num){
+		ReliefRequest request = requestRepository.findById(id_num);
+		request.setFufillmentSeat(seat_num);
+		request.setTimeFufilled(new Date());
+		requestRepository.save(request);
+	}
+	
+	
+	@RequestMapping("/putBackRequest")
+	public void otherRequest(@RequestParam("requestSeat") String reqSeat, @RequestParam("id") int idNum){
+		ReliefRequest request = new ReliefRequest();
+		ReliefRequest oldRequest = requestRepository.findById(idNum);
+		request.setSeatNum(reqSeat);
+		request.setBathroomBreak(oldRequest.isBathroomBreak());
+		request.setStore(oldRequest.getStore());
+		request.setTimeRequested(oldRequest.getTimeRequested());
+		requestRepository.save(request);
+		this.finishRequest(idNum, "N/F");
+	}
+	
+	@RequestMapping("/calledRequest")
+	public void calledRequest(@RequestParam("store") int storeNum, @RequestParam("seat") String seat){
+		ReliefRequest request = new ReliefRequest();
+		request.setActionSeat(seat);
+		request.setSeatNum("CALL");
+		Store store = storeRepository.findByIdNumber(storeNum);
+		request.setStore(store);
+		request.setTimeActioned(new Date());
+		request.setTimeRequested(new Date());
+		List<ReliefRequest> otherRequests = requestRepository.findByStore(store);
+		if(otherRequests.size() != 0){
+			for(ReliefRequest otherRequest : otherRequests){
+				otherRequest.setActionSeat(seat);
+				otherRequest.setTimeActioned(new Date());
+				this.finishRequest(otherRequest.getId(), "CALL");
+			}
+		}
+		requestRepository.save(request);
+	}
+	
+	
+	@RequestMapping("/getJavaDate")
+	public Date sendJavaDate(){
+		return new Date();
 	}
 
 }

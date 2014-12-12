@@ -11,34 +11,34 @@ public class Store {
 
 	private boolean onList;
 	private boolean top15;
-	private int aGroup;
-	private int bGroup;
-	private int cGroup;
-	private int satGroup;
+	private String aGroup;
+	private String bGroup;
+	private String cGroup;
+	private String satGroup;
 	private String state;
 	
-	public int getaGroup() {
+	public String getaGroup() {
 		return aGroup;
 	}
-	public void setaGroup(int aGroup) {
+	public void setaGroup(String aGroup) {
 		this.aGroup = aGroup;
 	}
-	public int getbGroup() {
+	public String getbGroup() {
 		return bGroup;
 	}
-	public void setbGroup(int bGroup) {
+	public void setbGroup(String bGroup) {
 		this.bGroup = bGroup;
 	}
-	public int getcGroup() {
+	public String getcGroup() {
 		return cGroup;
 	}
-	public void setcGroup(int cGroup) {
+	public void setcGroup(String cGroup) {
 		this.cGroup = cGroup;
 	}
-	public int getSatGroup() {
+	public String getSatGroup() {
 		return satGroup;
 	}
-	public void setSatGroup(int satGroup) {
+	public void setSatGroup(String satGroup) {
 		this.satGroup = satGroup;
 	}
 	public int getIdNumber() {
