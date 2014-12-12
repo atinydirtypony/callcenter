@@ -123,13 +123,11 @@
 						</ul>
 					</div>
 					
-					<div class="RFStores">
+					<div class="RFStores" ng-if="!isRFR">
 						<h3>Your Assigned Stores</h3>
-						<div class="row">
-							<div class="col-xs-4" ng-repeat="store in yourStores">
-								<button class="btn btn-default"
+						<div class="row" style="padding-left:30px; padding-right:30px; padding-bottom:30px">
+								<button class="btn btn-info col-xs-3" style="height:60px; font-size:18pt;" ng-repeat="store in yourStores"
 									ng-click="putOnList(store.idNumber)">{{store.idNumber}}</button>
-							</div>
 						</div>
 					</div>
 					
