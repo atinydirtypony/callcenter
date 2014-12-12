@@ -5,6 +5,7 @@ app.controller("MainController", function($scope, $http, $interval){
 	$scope.requestList =[];
 	tempBB =[];
 	$scope.bathroomRequest =[];
+	$scope.advisoryLevel = null;
 	
 
 	$scope.getList = function(){
@@ -23,6 +24,16 @@ app.controller("MainController", function($scope, $http, $interval){
 		})
 	}
 	
+	$scope.getAdvisoryLevel = function(){
+		$http.get("/getAdvisory").success(function(data){
+			advisoryLevel=data;
+		}).error(function(){
+			alert("Advisory Failed");
+		})
+		console.log(advisoryLevel);
+	}
+	
 	$interval($scope.getList, 5000);
+	$interval($scope.getAdvisoryLevel, 5000);
 	
 });
