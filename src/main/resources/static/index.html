@@ -118,7 +118,7 @@
 								<button class="btn btn-success"
 									ng-click="finishRequest(reliefRequest)">Finish</button>
 								<button class="btn btn-danger"
-									ng-click="putBackRequest(reliefRequest)">Put Back</button>
+									ng-click="putBackRequest(reliefRequest)" ng-if="!reliefRequest.bathroomBreak">Put Back</button>
 							</li>
 						</ul>
 					</div>
