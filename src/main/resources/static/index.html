@@ -99,20 +99,17 @@
 				<!-- Seat Content -->
 				<div class="seat_content card" ng-if="view=='seat'"
 					ng-controller="SeatController">
-					<h2>Store Assignments</h2>
-					<h3 ng-if="getSeat() != null">Seat: {{getSeat()}}</h3>
+					<h2>Store Assignments <small ng-if="getSeat() != null">Seat {{getSeat()}}</small></h2>
 
-					<!--  ****Commented out seat look up**** 
-					<input ng-model="seat_lookup"></input>-->
-					<button class="btn btn-default" ng-click="setSeat()">Set
-						Seat</button>
-
-					<button class="btn btn-danger" ng-click="C35()"
-						ng-if="!isRFR && getSeat() != null">Request C35</button>
-					<button class="btn btn-warning" ng-click="rfCall()" ng-if="isRFR">Get
-						Request</button>
-					<button class="btn btn-primary" ng-click="calledRequest()"
-						ng-if="isRFR">Store Call</button>
+					<div class="row">
+						<button class="btn btn-danger col-xs-offset-4 col-xs-4" ng-click="C35()"
+							ng-if="!isRFR && getSeat() != null">Request C35</button>
+						<button class="btn btn-warning col-xs-offset-2 col-xs-3" ng-click="rfCall()" ng-if="isRFR">Get
+							Request</button>
+						<button class="btn btn-primary col-xs-offset-2 col-xs-3" ng-click="calledRequest()"
+							ng-if="isRFR">Store Call</button>
+					</div>
+						
 					<div ng-if="isRFR">
 						<ul>
 							<li ng-repeat="reliefRequest in yourRequests">{{displayRequest(reliefRequest)}}
