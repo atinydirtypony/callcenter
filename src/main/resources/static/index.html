@@ -138,12 +138,14 @@
 					<h2 class="page-header">Call Center Administration</h2>
 					    <div class="col-sm-9">
 					      <input ng-model="cutOff_temp" type="text" class="form-control" id="set_cutOff" placeholder="Cut Off Number">
-					      <button ng-click="setCutOff(set_cutOff)">Set Cut Off</button>
+					     
 					    </div>
+					    <button ng-click="setCutOff(set_cutOff)">Set Cut Off</button>
 					    <div class="col-sm-9">
 					      <input ng-model="store_num" type="text" class="form-control" id="storeAdd" placeholder="Store ID">
-					      <button ng-click="putOnList(store_num);">Add Store To List</button>
+					      
 					    </div>
+					    <button ng-click="putOnList(store_num);">Add Store To List</button>
 					<p class="lead">Change the currently active seat group</p>
 					<div class="row">
 						<button ng-click="changeGroups('A')" class="btn btn-warning col-xs-offset-1 col-xs-4">A
