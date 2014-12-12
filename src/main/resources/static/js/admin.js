@@ -13,6 +13,7 @@ app.controller("AdminController", function($scope, $http, $interval) {
 	}
 	
 	$scope.setCutOff = function(num){
+		console.log(num);
 		$http.get("/setCutOff",{
 			params: { number: num}
 		}).success(function(data){
