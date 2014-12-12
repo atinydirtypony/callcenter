@@ -2,3 +2,23 @@
 	float:left;
 }
 
+body {
+	background-color: #f8f8f8;
+}
+
+#logo {
+	background-image: url('/img/GiantEagle.png');
+	display:block;
+	width:138px;
+	height:70px;
+	margin-right:20px;
+}
+
+.navbar {
+	background-color:white;
+}
+
+.eagle-header {
+	margin-top:8px;
+	margin-bottom:8px;
+}
