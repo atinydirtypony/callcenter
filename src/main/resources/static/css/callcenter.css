@@ -49,5 +49,6 @@ body {
 	margin-bottom:14px;
 }
 
-.admin_content .magic button {
+.page-header {
+	margin-top:12px;
 }
