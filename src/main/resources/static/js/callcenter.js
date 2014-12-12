@@ -26,11 +26,11 @@ app.controller("MainController", function($scope, $http, $interval){
 	
 	$scope.getAdvisoryLevel = function(){
 		$http.get("/getAdvisory").success(function(data){
-			advisoryLevel=data;
+			$scope.advisoryLevel=data;
 		}).error(function(){
 			alert("Advisory Failed");
 		})
-		console.log(advisoryLevel);
+
 	}
 	
 	$interval($scope.getList, 5000);
