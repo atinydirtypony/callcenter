@@ -126,6 +126,7 @@ public class StoreMainController {
 		ReliefRequest request = requestRepository.findById(id_num);
 		request.setFufillmentSeat(seat_num);
 		request.setTimeFufilled(new Date());
+		advisoryLevel.addLapTime(request.getTimeFufilled().getTime() - request.getTimeRequested().getTime());
 		requestRepository.save(request);
 	}
 	
@@ -172,5 +173,6 @@ public class StoreMainController {
 	public AdvisoryLevel getAdvisory(){
 		return advisoryLevel;
 	}
+	
 
 }
