@@ -24,144 +24,163 @@
 			</div>
 		</div>
 
-		<div class="navbar navbar-default" role="navigation">
-			<div class="container-fluid">
-				<div class="collapse navbar-collapse"
-					id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav">
-						<li ng-click="view ='home'" ng-class="{'active': view == 'home'}"><a
-							href="#">Home</a></li>
-						<li ng-click="view ='seat'" ng-class="{'active': view == 'seat'}"><a
-							href="#">Seat</a></li>
-						<li ng-click="view ='edit'" ng-class="{'active': view == 'edit'}"><a
-							href="#">Edit Stores</a></li>
-						<li ng-click="view ='reporting'"
-							ng-class="{'active': view == 'reporting'}"><a href="#">Reporting</a></li>
-					</ul>
-					<ul class="nav navbar-nav navbar-right">
-						<li ng-click="view ='admin'"
-							ng-class="{'active': view == 'admin'}"><a href="#">Administration</a></li>
-					</ul>
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="navbar navbar-default" role="navigation">
+					<div class="container-fluid">
+						<div class="collapse navbar-collapse"
+							id="bs-example-navbar-collapse-1">
+							<ul class="nav navbar-nav">
+								<li ng-click="view ='home'" ng-class="{'active': view == 'home'}"><a
+									href="#">Home</a></li>
+								<li ng-click="view ='seat'" ng-class="{'active': view == 'seat'}"><a
+									href="#">Seat</a></li>
+								<li ng-click="view ='edit'" ng-class="{'active': view == 'edit'}"><a
+									href="#">Edit Stores</a></li>
+								<li ng-click="view ='reporting'"
+									ng-class="{'active': view == 'reporting'}"><a href="#">Reporting</a></li>
+							</ul>
+							<ul class="nav navbar-nav navbar-right">
+								<li ng-click="view ='admin'"
+									ng-class="{'active': view == 'admin'}"><a href="#">Administration</a></li>
+							</ul>
+						</div>
+						<!-- /.navbar-collapse -->
+					</div>
+					<!-- /.container-fluid -->
 				</div>
-				<!-- /.navbar-collapse -->
 			</div>
-			<!-- /.container-fluid -->
 		</div>
 
-		<div class="nav">
-			<ul>
-				<li><button class="btn" type="button" ng-click="view ='home'"
-						ng-class="{'btn-success': view == 'home', 'btn-default': view != 'home'}">Home</button></li>
-				<li><button class="btn" type="button" ng-click="view = 'seat'"
-						ng-class="{'btn-success': view == 'seat', 'btn-default': view != 'seat'}">Seat</button></li>
-				<li><button class="btn" type="button" ng-click="view = 'admin'"
-						ng-class="{'btn-success': view == 'admin', 'btn-default': view != 'admin'}">Admin
-						Seat</li>
-				<li><button class="btn" type="button" ng-click="view = 'edit'"
-						ng-class="{'btn-success': view == 'edit', 'btn-default': view != 'edit'}">Edit
-						Stores</button></li>
-				<li><button class="btn" type="button"
-						ng-click="view = 'reporting'"
-						ng-class="{'btn-success': view == 'reporting', 'btn-default': view != 'reporting'}">Reporting</button></li>
-			</ul>
-		</div>
+		<div class="row">
 
-		<div class="CClist col-md-3">
-			<h1>The List</h1>
-			<h4>{{advisoryLevel.level}} Groups</h4>
-			<h4>Cut Off: +{{advisoryLevel.cutOff}}</h4>
-			<h4>Est. Completiong Time: {{advisoryLevel.timeTillComplete}} Min</h4>
-			<ul>
-				<li ng-repeat="requests in bathroomRequest">C35 @
-					{{requests.seatNum}}</li>
-			</ul>
-			<ul>
-				<li ng-repeat="requests in requestList">{{requests.store.idNumber}}</li>
-			</ul>
-		</div>
-
-		<div class="content col-md-9">
-
-			<!-- Home Content -->
-			<div class="home_content" ng-if="view=='home'">
-				<h2>Giant Eagle Pharmacy Call Center</h2>
-				<p class="lead">Lorem ipsum dolor sit amet, consectetur
-					adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-					dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-					exercitation ullamco laboris nisi</p>
-				<p>Possible uses for this page...</p>
-				<ul>
-					<li>Global Announcements</li>
-					<li>Links to department documents</li>
-					<li>Other...</li>
-				</ul>
-			</div>
-
-			<!-- Seat Content -->
-			<div class="seat_content" ng-if="view=='seat'"
-				ng-controller="SeatController">
-				<h1>DV2's</h1>
-				<h3 ng-if="getSeat() != null">Seat: {{getSeat()}}</h3>
-
-				<!--  ****Commented out seat look up**** 
-				<input ng-model="seat_lookup"></input>-->
-				<button class="btn btn-default" ng-click="setSeat()">Set
-					Seat</button>
-
-				<button class="btn btn-danger" ng-click="C35()"
-					ng-if="!isRFR && getSeat() != null">Request C35</button>
-				<button class="btn btn-warning" ng-click="rfCall()" ng-if="isRFR">Get
-					Request</button>
-				<button class="btn btn-primary" ng-click="calledRequest()"
-					ng-if="isRFR">Store Call</button>
-				<div ng-if="isRFR">
-					<ul>
-						<li ng-repeat="reliefRequest in yourRequests">{{displayRequest(reliefRequest)}}
-							<button class="btn btn-success"
-								ng-click="finishRequest(reliefRequest)">Finish</button>
-							<button class="btn btn-danger"
-								ng-click="putBackRequest(reliefRequest)">Put Back</button>
-						</li>
-					</ul>
+			<div class="col-md-3">
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="card info-card">
+							<h5 class="text-center">Current Group</h5>
+							<h3 class="text-center">{{advisoryLevel.level}}</h3>
+							<h5 class="text-center">Cut Off</h5>
+							<h3 class="text-center">+{{advisoryLevel.cutOff}}</h3>
+							<h5 class="text-center">Estimated Completion Time</h5>
+							<h3 class="text-center">{{advisoryLevel.timeTillComplete}} Minutes</h3>
+						</div>
+					</div>
 				</div>
-				<div class="RFStores row">
-					<div class="col-xs-4" ng-repeat="store in yourStores">
-						<button class="btn btn-default"
-							ng-click="putOnList(store.idNumber)">{{store.idNumber}}</button>
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="card">
+							<h2>The List</h2>
+							<ul>
+								<li ng-repeat="requests in bathroomRequest">C35 @
+									{{requests.seatNum}}</li>
+							</ul>
+							<ul>
+								<li ng-repeat="requests in requestList">{{requests.store.idNumber}}</li>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>
 
-			<!-- Admin Content -->
-			<div ng-controller="AdminController" class="admin_content" ng-if="view=='admin'">
-				<h1>Admin Seat</h1>
-				<button>A Group</button>
-				<button>B Group</button>
-				<button>C Group</button>
-				<button>Sat Group</button>
+			<div class="col-md-9">
+
+				<!-- Home Content -->
+				<div class="home_content card" ng-if="view=='home'">
+					<h2>Giant Eagle Pharmacy Call Center</h2>
+					<p class="lead">Lorem ipsum dolor sit amet, consectetur
+						adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+						dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+						exercitation ullamco laboris nisi</p>
+					<p>Possible uses for this page...</p>
+					<ul>
+						<li>Global Announcements</li>
+						<li>Links to department documents</li>
+						<li>Other...</li>
+					</ul>
+				</div>
+
+				<!-- Seat Content -->
+				<div class="seat_content card" ng-if="view=='seat'"
+					ng-controller="SeatController">
+					<h2>Store Assignments</h2>
+					<h3 ng-if="getSeat() != null">Seat: {{getSeat()}}</h3>
+
+					<!--  ****Commented out seat look up**** 
+					<input ng-model="seat_lookup"></input>-->
+					<button class="btn btn-default" ng-click="setSeat()">Set
+						Seat</button>
+
+					<button class="btn btn-danger" ng-click="C35()"
+						ng-if="!isRFR && getSeat() != null">Request C35</button>
+					<button class="btn btn-warning" ng-click="rfCall()" ng-if="isRFR">Get
+						Request</button>
+					<button class="btn btn-primary" ng-click="calledRequest()"
+						ng-if="isRFR">Store Call</button>
+					<div ng-if="isRFR">
+						<ul>
+							<li ng-repeat="reliefRequest in yourRequests">{{displayRequest(reliefRequest)}}
+								<button class="btn btn-success"
+									ng-click="finishRequest(reliefRequest)">Finish</button>
+								<button class="btn btn-danger"
+									ng-click="putBackRequest(reliefRequest)">Put Back</button>
+							</li>
+						</ul>
+					</div>
+					<div class="RFStores row">
+						<div class="col-xs-4" ng-repeat="store in yourStores">
+							<button class="btn btn-default"
+								ng-click="putOnList(store.idNumber)">{{store.idNumber}}</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Admin Content -->
+				<div class="admin_content card" ng-if="view=='admin'">
+					<h2>Call Center Administration</h2>
+					<p class="lead">Change the currently active seat group</p>
+					<div class="row">
+						<button class="btn btn-warning col-xs-offset-1 col-xs-4">A
+							Group</button>
+						<button class="btn btn-warning col-xs-offset-1 col-xs-4">B
+							Group</button>
+					</div>
+					<div class="row" style="margin-top: 10px; margin-bottom: 30px">
+						<button class="btn btn-warning col-xs-offset-1 col-xs-4">C
+							Group</button>
+						<button class="btn btn-warning col-xs-offset-1 col-xs-4">Sat
+							Group</button>
+					</div>
+				</div>
+
+				<!-- Edit Content -->
+				<div class="edit_content card" ng-if="view=='edit'"
+					ng-controller="EditStores">
+					<h2>Edit Stores</h2>
+					<input ng-model="store_id"></input>
+					<button class="btn btn-default" ng-click="storeLookUp()">Look-Up</button>
+					<br /> <label>Store Number:</label><input
+						ng-model="store.idNumber"></input><br /> <label>A Group:</label><input
+						ng-model="store.aGroup"></input><br /> <label>B Group:</label><input
+						ng-model="store.bGroup"></input><br /> <label>C Group:</label><input
+						ng-model="store.cGroup"></input><br /> <label>Saturday
+						Group:</label><input ng-model="store.satGroup"></input><br /> <label>State</label><input
+						ng-model="store.state"></input><br />
+
+					<button class="btn btn-primary" ng-click="saveStore()">Save</button>
+
+				</div>
+
+				<!-- Reporting Content -->
+				<div class="reporting_content card"
+					ng-if="view=='reporting'">
+					<h2>Reporting</h2>
+					<p class="lead">All reporting goes here</p>
+				</div>
+
 			</div>
 
-			<!-- Edit Content -->
-			<div class="edit_content" ng-if="view=='edit'"
-				ng-controller="EditStores">
-				<h1>Edit Stores</h1>
-				<input ng-model="store_id"></input>
-				<button class="btn btn-default" ng-click="storeLookUp()">Look-Up</button>
-				<br /> <label>Store Number:</label><input ng-model="store.idNumber"></input><br />
-				<label>A Group:</label><input ng-model="store.aGroup"></input><br />
-				<label>B Group:</label><input ng-model="store.bGroup"></input><br />
-				<label>C Group:</label><input ng-model="store.cGroup"></input><br />
-				<label>Saturday Group:</label><input ng-model="store.satGroup"></input><br />
-				<label>State</label><input ng-model="store.state"></input><br />
 
-				<button class="btn btn-primary" ng-click="saveStore()">Save</button>
-
-			</div>
-
-			<!-- Reporting Content -->
-			<div class="reporting_content" ng-if="view=='reporting'">
-				<h1>Reporting</h1>
-			</div>
 
 		</div>
 
