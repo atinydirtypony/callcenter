@@ -7,7 +7,12 @@ app.controller("MainController", function($scope, $http, $interval){
 	$scope.bathroomRequest =[];
 	$scope.advisoryLevel = null;
 	
-
+	$scope.pad = function(num, size) {
+	    var s = num+"";
+	    while (s.length < size) s = "0" + s;
+	    return s;
+	}
+	
 	$scope.getList = function(){
 		$http.get("/getList").success(function(data){
 			$scope.requestList = data;
