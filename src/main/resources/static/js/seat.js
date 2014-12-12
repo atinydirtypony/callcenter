@@ -65,11 +65,12 @@ app.controller("SeatController", function($scope, $http, $interval) {
 			params : {seat : realSeat ,store: store, C35: false}
 				
 		}).success(function(data) {
-			alert("Store: "+store+ " ==> Requested");
+			//alert("Store: "+store+ " ==> Requested");
+			$scope.getList();
 		}).error(function() {
 			alert("Request Failed");
 		})
-		$scope.getList();
+		
 	}
 	$scope.getYourRequests =function(){
 		$http.get("/getActiveRequests", {params: {seat :realSeat} }).success(function(data) {
@@ -82,11 +83,11 @@ app.controller("SeatController", function($scope, $http, $interval) {
 	$scope.rfCall = function(){
 		$http.get("/getRequest", {params: {seat :realSeat} }).success(function(data) {
 			$scope.getYourRequests();
+			$scope.getList();
 		}).error(function() {
 			alert("Request Failed");
 		})
-		$scope.getList();
-		$scope.getYourRequests();
+		
 	}
 	
 	$scope.displayRequest =function(request){
@@ -103,22 +104,24 @@ app.controller("SeatController", function($scope, $http, $interval) {
 		$http.get("/addRequest",{
 			params: {seat : realSeat, store: 0, C35: true}
 		}).success(function(data) {
-			alert("C35 Requested");
+			$scope.getList();
+			//alert("C35 Requested");
 		}).error(function() {
 			alert("Request Failed");
 		})
-		$scope.getList();
+		
 	}
 	
 	$scope.finishRequest = function(request){
 		$http.get("/finishRequest",{
 			params: {seat : realSeat, id: request.id}
 		}).success(function(data) {
-			alert("TaskCompleted");
+			$scope.getYourRequests();
+			//alert("TaskCompleted");
 		}).error(function() {
 			alert("Request Failed");
 		})
-		$scope.getYourRequests();
+		
 	}
 	
 	$scope.putBackRequest = function(request){
@@ -126,12 +129,13 @@ app.controller("SeatController", function($scope, $http, $interval) {
 		$http.get("/putBackRequest",{
 			params: { requestSeat: realSeat, id: request.id}
 		}).success(function(){
-			alert("Task Returned");
+			$scope.getYourRequests();
+			$scope.getList();
+			//alert("Task Returned");
 		}).error(function(){
 			alert("Request failed");
 		})
-		$scope.getYourRequests();
-		$scope.getList();
+		
 		
 	}
 	
@@ -140,7 +144,8 @@ app.controller("SeatController", function($scope, $http, $interval) {
 		$http.get("/calledRequest",{
 			params: {store: store_num, seat: realSeat}
 		}).success(function(){
-			alert("Call Added");
+			$scope.getYourRequests();
+			//alert("Call Added");
 		}).error(function(){
 			alert("Request failed");
 		})

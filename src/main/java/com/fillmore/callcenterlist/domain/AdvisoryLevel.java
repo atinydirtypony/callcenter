@@ -1,7 +1,7 @@
 package com.fillmore.callcenterlist.domain;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -11,6 +11,19 @@ public class AdvisoryLevel {
 	private String level = "C";
 	private int cutOff = 40;
 	private int timeTillComplete = 0;
+	private List<Long> lapTimes = new ArrayList<Long>();
+	
+	public void addLapTime(Long time){
+		lapTimes.add(time);
+		if(lapTimes.size()>10){
+			lapTimes.remove(0);
+		}
+		Long sum = (long) 0;
+		for(Long i: lapTimes ){
+			sum= sum+i;
+		}
+		timeTillComplete = Math.round((sum/ (lapTimes.size()*60 * 1000)) % 60);
+	}
 
 	public void changeToA() {
 		this.level = "A";
@@ -38,6 +51,10 @@ public class AdvisoryLevel {
 		}else{
 			this.level = "C";
 		}
+		cutOff = 40;
+		timeTillComplete = 0;
+		lapTimes.clear();
+		
 	}
 
 	public int getCutOff() {
