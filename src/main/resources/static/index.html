@@ -131,11 +131,11 @@
 				<!-- Admin Content -->
 				<div ng-controller="AdminController" class="admin_content card" ng-if="view=='admin'">
 					<h2>Call Center Administration</h2>
-					    <div class="col-sm-9">
+					    <div class="col-sm-6">
 					      <input ng-model="cutOff_temp" type="text" class="form-control" id="set_cutOff" placeholder="Cut Off Number">
 					      <button ng-click="setCutOff(cutOff_temp)">Set Cut Off</button>
 					    </div>
-					    <div class="col-sm-9">
+					    <div class="col-sm-6">
 					      <input ng-model="store_num" type="text" class="form-control" id="storeAdd" placeholder="Store ID">
 					      <button ng-click="putOnList(store_num);">Add Store To List</button>
 					    </div>
