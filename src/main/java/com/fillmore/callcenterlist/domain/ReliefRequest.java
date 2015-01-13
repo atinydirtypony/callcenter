@@ -15,10 +15,13 @@ public class ReliefRequest {
 	@OneToOne
 	private Store store;
 	private String seatNum;
+	private String requestingUser;
 	private Date timeRequested;
 	private String actionSeat;
+	private String actioningUser;
 	private Date timeActioned;
 	private String fufillmentSeat;
+	private String fufillingUser;
 	public String getActionSeat() {
 		return actionSeat;
 	}
@@ -78,6 +81,25 @@ public class ReliefRequest {
 	}
 	public void setTimeFufilled(Date timeFufilled) {
 		this.timeFufilled = timeFufilled;
+	}
+	
+	public String getRequestingUser() {
+		return requestingUser;
+	}
+	public void setRequestingUser(String requestingUser) {
+		this.requestingUser = requestingUser;
+	}
+	public String getActioningUser() {
+		return actioningUser;
+	}
+	public void setActioningUser(String actioningUser) {
+		this.actioningUser = actioningUser;
+	}
+	public String getFufillingUser() {
+		return fufillingUser;
+	}
+	public void setFufillingUser(String fufillingUser) {
+		this.fufillingUser = fufillingUser;
 	}
 	
 	

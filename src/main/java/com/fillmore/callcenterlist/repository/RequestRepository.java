@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import com.fillmore.callcenterlist.domain.Account;
 import com.fillmore.callcenterlist.domain.ReliefRequest;
 import com.fillmore.callcenterlist.domain.Store;
 
@@ -16,6 +17,8 @@ public interface RequestRepository extends CrudRepository<ReliefRequest, Integer
 	public List<ReliefRequest> findBytimeFufilled(Date time);
 	
 	public List<ReliefRequest> findBytimeFufilledAndActionSeat(Date timeActioned, String actionSeat);
+	
+	public List<ReliefRequest> findBytimeFufilledAndActioningUser(Date timeActioned, String user);
 	
 	public ReliefRequest findById(int id_num);
 	

@@ -9,7 +9,6 @@ public class Store {
 	private int idNumber;
 	
 
-	private boolean onList;
 	private boolean top15;
 	private String aGroup;
 	private String bGroup;
@@ -54,12 +53,6 @@ public class Store {
 		this.top15 = top15;
 	}
 	
-	public boolean isOnList() {
-		return onList;
-	}
-	public void setOnList(boolean onList) {
-		this.onList = onList;
-	}
 	public String getState() {
 		return state;
 	}

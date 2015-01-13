@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fillmore.callcenterlist.domain.AdvisoryLevel;
 import com.fillmore.callcenterlist.domain.ReliefRequest;
+import com.fillmore.callcenterlist.domain.Seat;
 import com.fillmore.callcenterlist.domain.Store;
 import com.fillmore.callcenterlist.repository.RequestRepository;
+import com.fillmore.callcenterlist.repository.SeatRepository;
 import com.fillmore.callcenterlist.repository.StoreRepository;
 
 @RestController
@@ -24,12 +27,16 @@ public class StoreMainController {
 
 	@Autowired
 	private StoreRepository storeRepository;
+	
+	@Autowired
+	private SeatRepository seatRepository;
 
 	@Autowired
 	private RequestRepository requestRepository;
 
 	@Autowired
 	private AdvisoryLevel advisoryLevel;
+	
 
 	@RequestMapping("/save")
 	public void saveStore(@RequestBody Store store) {
@@ -45,6 +52,7 @@ public class StoreMainController {
 		List<ReliefRequest> currentList = requestRepository.findBytimeFufilled(null);
 		ReliefRequest request = new ReliefRequest();
 		request.setSeatNum(seatNum);
+		request.setRequestingUser(SecurityContextHolder.getContext().getAuthentication().getName());
 		request.setTimeRequested(new Date());
 		
 		//log.info("C35:"+c35);
@@ -110,6 +118,7 @@ public class StoreMainController {
 		ReliefRequest request = requests.get(0);
 		log.info(request);
 		request.setActionSeat(seat_num);
+		request.setActioningUser(SecurityContextHolder.getContext().getAuthentication().getName());
 		request.setTimeActioned(new Date());
 		requestRepository.save(request);
 		return request;
@@ -117,14 +126,16 @@ public class StoreMainController {
 	
 
 	@RequestMapping("/getActiveRequests")
-	public List<ReliefRequest> getActiveRequest(@RequestParam("seat") String seat_num) {
-		return requestRepository.findBytimeFufilledAndActionSeat(null, seat_num);
+	public List<ReliefRequest> getActiveRequest() {
+		log.info(SecurityContextHolder.getContext().getAuthentication().getName());
+		return requestRepository.findBytimeFufilledAndActioningUser(null, SecurityContextHolder.getContext().getAuthentication().getName());
 	}
 	
 	@RequestMapping("/finishRequest")
 	public void finishRequest(@RequestParam("id") int id_num, @RequestParam("seat") String seat_num){
 		ReliefRequest request = requestRepository.findById(id_num);
 		request.setFufillmentSeat(seat_num);
+		request.setFufillingUser(SecurityContextHolder.getContext().getAuthentication().getName());
 		request.setTimeFufilled(new Date());
 		if(!request.isBathroomBreak()){
 			advisoryLevel.addLapTime(request.getTimeFufilled().getTime() - request.getTimeRequested().getTime());
@@ -138,6 +149,7 @@ public class StoreMainController {
 		ReliefRequest request = new ReliefRequest();
 		ReliefRequest oldRequest = requestRepository.findById(idNum);
 		request.setSeatNum(reqSeat);
+		request.setRequestingUser(SecurityContextHolder.getContext().getAuthentication().getName());
 		request.setBathroomBreak(oldRequest.isBathroomBreak());
 		request.setStore(oldRequest.getStore());
 		request.setTimeRequested(oldRequest.getTimeRequested());
@@ -149,7 +161,9 @@ public class StoreMainController {
 	public void calledRequest(@RequestParam("store") int storeNum, @RequestParam("seat") String seat){
 		ReliefRequest request = new ReliefRequest();
 		request.setActionSeat(seat);
+		request.setActioningUser(SecurityContextHolder.getContext().getAuthentication().getName());
 		request.setSeatNum("CALL");
+		request.setRequestingUser("CALL");
 		Store store = storeRepository.findByIdNumber(storeNum);
 		request.setStore(store);
 		request.setTimeActioned(new Date());
@@ -194,6 +208,16 @@ public class StoreMainController {
 	@RequestMapping("/setCutOff")
 	public void setCutOff(@RequestParam("number") int num){
 		advisoryLevel.setCutOff(num);
+	}
+	
+	@RequestMapping("/getGroups")
+	public List<Integer> getCurrentGroups(){
+		return storeRepository.findAGroups();
+	}
+	
+	@RequestMapping("/getSeats")
+	public List<Seat> getSeats(){
+		return seatRepository.findAll();
 	}
 
 }

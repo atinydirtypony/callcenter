@@ -2,6 +2,7 @@ package com.fillmore.callcenterlist.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import com.fillmore.callcenterlist.domain.Store;
@@ -18,5 +19,8 @@ public interface StoreRepository extends CrudRepository<Store, Integer> {
 	
 	public List<Store> findBysatGroup(String seat);
 	
+	@Query("Select distinct s.aGroup from Store s order by s.aGroup asc")
+	public List<Integer> findAGroups();
+ 	
 
 }
