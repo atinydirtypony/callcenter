@@ -12,6 +12,12 @@ public class ReliefRequest {
 	//bathroomBreak is a poop/pee time request
 	private boolean bathroomBreak =false;
 	
+	
+	@Id
+	@GeneratedValue
+	private int id;
+	
+	
 	@OneToOne
 	private Store store;
 	private String seatNum;
@@ -22,6 +28,11 @@ public class ReliefRequest {
 	private Date timeActioned;
 	private String fufillmentSeat;
 	private String fufillingUser;
+	private Date timeFufilled;
+	private boolean helpRequest = false;
+	private boolean beingHelped = false;
+	private int originalId;
+	
 	public String getActionSeat() {
 		return actionSeat;
 	}
@@ -34,11 +45,7 @@ public class ReliefRequest {
 	public void setFufillmentSeat(String fufillmentSeat) {
 		this.fufillmentSeat = fufillmentSeat;
 	}
-	private Date timeFufilled;
-	@Id
-	@GeneratedValue
-	private int id;
-	
+
 	public int getId() {
 		return id;
 	}
@@ -101,6 +108,28 @@ public class ReliefRequest {
 	public void setFufillingUser(String fufillingUser) {
 		this.fufillingUser = fufillingUser;
 	}
+	
+	public boolean isHelpRequest() {
+		return helpRequest;
+	}
+	
+	public void setHelpRequest(boolean helpRequest) {
+		this.helpRequest = helpRequest;
+	}
+	public int getOriginalId() {
+		return originalId;
+	}
+	public void setOriginalId(int originalId) {
+		this.originalId = originalId;
+	}
+	public boolean isBeingHelped() {
+		return beingHelped;
+	}
+	public void setBeingHelped(boolean beingHelped) {
+		this.beingHelped = beingHelped;
+	}
+	
+	
 	
 	
 }

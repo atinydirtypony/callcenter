@@ -20,6 +20,8 @@ public interface RequestRepository extends CrudRepository<ReliefRequest, Integer
 	
 	public List<ReliefRequest> findBytimeFufilledAndActioningUser(Date timeActioned, String user);
 	
+	public ReliefRequest findByOriginalId(int id_num);
+	
 	public ReliefRequest findById(int id_num);
 	
 	public List<ReliefRequest> findByStore(Store store);

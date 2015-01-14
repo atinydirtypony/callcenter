@@ -1,5 +1,6 @@
 package com.fillmore.callcenterlist.domain;
 
+import java.beans.Transient;
 import java.util.Collection;
 
 import javax.persistence.Entity;
@@ -106,18 +107,22 @@ public class Account implements UserDetails {
 			
 		}
 	}
+	@Transient
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Transient
 	public boolean isAccountNonExpired() {
 		// TODO Auto-generated method stub
 		return true;
 	}
+	@Transient
 	public boolean isAccountNonLocked() {
 		// TODO Auto-generated method stub
 		return true;
 	}
+	@Transient
 	public boolean isCredentialsNonExpired() {
 		// TODO Auto-generated method stub
 		return true;

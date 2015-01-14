@@ -42,17 +42,21 @@ app.controller("SeatController", function($scope, $http, $interval) {
 		$scope.getStores();
 	}
 	
-	/*$scope.getSeat = function(){
+	$scope.getSeat = function(){
+		tempGroup=null;
+		if($scope.realSeat.indexOf("RF") >=0){
+			tempGroup = $scope.realSeat.slice(2);
+		}
 		if($scope.workingSeat == null || $scope.realSeat ==null){
 			return null;
-		}else if($scope.workingSeat == $scope.realSeat){
-			return $scope.workingSeat;
+		}else if($scope.workingSeat == tempGroup){
+			return $scope.realSeat;
 		}else{
 			return $scope.workingSeat +"@"+$scope.realSeat;
 		}
 	}
 	
-	$scope.setSeat = function(look_up){
+	/*$scope.setSeat = function(look_up){
 		// console.log("***");
 		$scope.seat_lookup = look_up;
 		// console.log("***");
@@ -195,6 +199,27 @@ app.controller("SeatController", function($scope, $http, $interval) {
 			$scope.getYourRequests();
 		}else{
 			$scope.getStores();
+		}
+	}
+	$scope.getHelp = function(request){
+		//console.log(request.store)
+		$http.get("/helpRequest",{
+			params: {id: request.id}
+		}).success(function(){
+			$scope.getYourRequests();
+			$scope.getList();
+			//alert("Task Returned");
+		}).error(function(){
+			alert("Request failed");
+		})
+	}
+	
+	$scope.helpCheck = function(request){
+		console.log(request);
+		if(!request.helpRequest && !request.beingHelped && !request.bathroomBreak){
+			return true;
+		}else{
+			return false;
 		}
 	}
 	

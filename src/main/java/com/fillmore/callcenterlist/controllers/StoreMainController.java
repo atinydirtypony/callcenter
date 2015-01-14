@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fillmore.callcenterlist.domain.Account;
 import com.fillmore.callcenterlist.domain.AdvisoryLevel;
 import com.fillmore.callcenterlist.domain.ReliefRequest;
 import com.fillmore.callcenterlist.domain.Seat;
 import com.fillmore.callcenterlist.domain.Store;
+import com.fillmore.callcenterlist.repository.AccountRepository;
 import com.fillmore.callcenterlist.repository.RequestRepository;
 import com.fillmore.callcenterlist.repository.SeatRepository;
 import com.fillmore.callcenterlist.repository.StoreRepository;
@@ -36,6 +38,9 @@ public class StoreMainController {
 
 	@Autowired
 	private AdvisoryLevel advisoryLevel;
+	
+	@Autowired
+	private AccountRepository accountRepository;
 	
 
 	@RequestMapping("/save")
@@ -83,6 +88,20 @@ public class StoreMainController {
 		}
 
 	}
+	
+	@RequestMapping("/helpRequest")
+	public void getHelp(@RequestParam("id") int id){
+		ReliefRequest oldRequest = requestRepository.findById(id);
+		ReliefRequest request = new ReliefRequest();
+		request.setTimeRequested(oldRequest.getTimeRequested());
+		request.setStore(oldRequest.getStore());
+		request.setHelpRequest(true);
+		request.setOriginalId(oldRequest.getId());
+		if(!oldRequest.isBeingHelped()){
+			oldRequest.setBeingHelped(true);
+			requestRepository.save(request);
+		}
+	}
 
 	@RequestMapping("/storeById")
 	public Store storeById(@RequestParam("id") int id) {
@@ -116,7 +135,7 @@ public class StoreMainController {
 			requests = requestRepository.getOldestActiveStoreRequest();
 		}
 		ReliefRequest request = requests.get(0);
-		log.info(request);
+		//log.info(request);
 		request.setActionSeat(seat_num);
 		request.setActioningUser(SecurityContextHolder.getContext().getAuthentication().getName());
 		request.setTimeActioned(new Date());
@@ -141,6 +160,27 @@ public class StoreMainController {
 			advisoryLevel.addLapTime(request.getTimeFufilled().getTime() - request.getTimeRequested().getTime());
 		}
 		requestRepository.save(request);
+		if(!seat_num.equals("N/F")){
+			ReliefRequest secondary = null;
+			if(request.isHelpRequest()){
+				secondary = requestRepository.findById(request.getOriginalId());
+			}else if(request.isBeingHelped()){
+				secondary = requestRepository.findByOriginalId(request.getId());
+			}
+			//log.info(request.isHelpRequest());
+			//log.info(request.isBeingHelped());
+			//log.info(secondary);
+			if(secondary != null){
+				//log.info("HI!!!");
+				secondary.setTimeFufilled(new Date());
+				secondary.setFufillingUser(secondary.getActioningUser());
+				secondary.setFufillmentSeat(secondary.getActionSeat());
+				if(secondary.getTimeActioned()==null){
+					secondary.setTimeActioned(new Date());
+				}
+				requestRepository.save(secondary);
+			}
+		}
 	}
 	
 	
@@ -153,6 +193,8 @@ public class StoreMainController {
 		request.setBathroomBreak(oldRequest.isBathroomBreak());
 		request.setStore(oldRequest.getStore());
 		request.setTimeRequested(oldRequest.getTimeRequested());
+		request.setBeingHelped(oldRequest.isBeingHelped());
+		request.setHelpRequest(oldRequest.isHelpRequest());
 		requestRepository.save(request);
 		this.finishRequest(idNum, "N/F");
 	}
@@ -219,5 +261,14 @@ public class StoreMainController {
 	public List<Seat> getSeats(){
 		return seatRepository.findAll();
 	}
-
+	
+	@RequestMapping("/accountByUsername")
+	public Account accountByUserName(@RequestParam("id") String name){
+		return accountRepository.findByUsername(name);
+	}
+	
+	@RequestMapping("/saveAccount")
+	public void saveAccount(@RequestBody Account account){
+		accountRepository.save(account);
+	}
 }

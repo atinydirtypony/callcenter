@@ -9,6 +9,7 @@
 <script type="text/javascript" src="js/editstores.js"></script>
 <script type="text/javascript" src="js/seat.js"></script>
 <script type="text/javascript" src="js/admin.js"></script>
+<script type="text/javascript" src="js/editaccounts.js"></script>
 
 
 </head>
@@ -25,6 +26,7 @@
 				<div>
 					<span sec:authentication = "principal.firstName" ></span>
 					<span sec:authentication = "principal.lastName" ></span>
+					<button><a href= "/logout">Logout</a></button>
 				</div>
 			</div>
 		</div>
@@ -42,6 +44,8 @@
 									href="#">Tasks</a></li>
 								<li sec:authorize="principal.getCert('')" ng-click="view ='edit'" ng-class="{'active': view == 'edit'}"><a
 									href="#">Edit Stores</a></li>
+								<li sec:authorize="principal.getCert('')" ng-click="view ='accountEdit'" ng-class="{'active': view == 'accountEdit'}"><a
+									href="#">Edit Accounts</a></li>
 								<li sec:authorize="principal.getCert('Reports')" ng-click="view ='reporting'"
 									ng-class="{'active': view == 'reporting'}"><a href="#">Reporting</a></li>
 							</ul>
@@ -131,6 +135,8 @@
 									ng-click="finishRequest(reliefRequest)">Finish</button>
 								<button class="btn btn-danger"
 									ng-click="putBackRequest(reliefRequest)" ng-if="!reliefRequest.bathroomBreak">Put Back</button>
+								<button class = "btn btn-alert"
+										ng-click="getHelp(reliefRequest)" ng-if="helpCheck(reliefRequest)">Get Help</button>
 							</li>
 						</ul>
 					</div>
@@ -175,7 +181,62 @@
 					</div>
 				</div>
 
-				<!-- Edit Content -->
+				<!-- Account Edit Content -->
+				<div sec:authorize="principal.getCert('')" class="accountEdit_content card" ng-if="view=='accountEdit'"
+					ng-controller="EditAccounts">
+					<h2 class="page-header">Edit Accounts</h2>
+					
+					<br/>
+					
+					<div class="form-group row">
+					   <label for="lookupStore" class="col-sm-3 control-label">Look-Up Account</label>
+					    <div class="col-sm-6">
+					      <input ng-model="account_id" type="text" class="form-control" id="lookupAccount" placeholder="Account ID"/>
+					    </div>
+					    <button class="btn btn-warning col-sm-2" ng-click="accountLookUp()">Look-Up</button>
+					</div>
+					
+					<br/>
+					
+					<div class="form-group row">
+					   <label  class="col-sm-3 control-label" for="firstName">First Name</label>
+					    <div class="col-sm-9">
+					      <input ng-model="account.firstName" type="text" class="form-control" id="firstName"/>
+					    </div>
+					</div>
+					
+					<div class="form-group row">
+					   <label  class="col-sm-3 control-label" for="lastName">Last Name</label>
+					    <div class="col-sm-9">
+					      <input ng-model="account.lastName" type="text" class="form-control" id="lastName"/>
+					    </div>
+					</div>
+					
+					<div class="checkbox">
+						<label>
+							<input ng-model="account.callsCert" type="checkbox">Calls</input>
+						</label>
+					</div>
+					
+					<div class="checkbox">
+						<label>
+							<input ng-model="account.dataEntryCert" type="checkbox">Data Entry</input>
+						</label>
+					</div>
+					
+					<div class="checkbox">
+						<label>
+							<input ng-model="account.reportCert" type="checkbox">Reports</input>
+						</label>
+					</div>
+
+					<div class="row">
+						<button class="btn btn-primary col-xs-6 col-xs-offset-3" ng-click="saveAccount()">Save Account</button>
+					</div>
+					
+				</div>
+					
+					<!-- Edit Content -->
 				<div sec:authorize="principal.getCert('')" class="edit_content card" ng-if="view=='edit'"
 					ng-controller="EditStores">
 					<h2 class="page-header">Edit Stores</h2>
