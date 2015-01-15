@@ -1,5 +1,7 @@
 package com.fillmore.callcenterlist.domain;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -15,6 +17,7 @@ public class Store {
 	private String cGroup;
 	private String satGroup;
 	private String state;
+	private Date lastChecked;
 	
 	public String getaGroup() {
 		return aGroup;
@@ -59,5 +62,12 @@ public class Store {
 	public void setState(String state) {
 		this.state = state;
 	}
+	public Date getLastChecked() {
+		return lastChecked;
+	}
+	public void setLastChecked(Date lastChecked) {
+		this.lastChecked = lastChecked;
+	}
+	
 	
 }

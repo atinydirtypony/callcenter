@@ -5,6 +5,8 @@ app.controller("SeatController", function($scope, $http, $interval) {
 	$scope.yourRequests =[];
 	$scope.workingSeat = null;
 	$scope.realSeat = null;
+	$scope.storesNeedChecked=null;
+
 	
 	$scope.allSeats = null;
 	$scope.groups = null;
@@ -13,6 +15,7 @@ app.controller("SeatController", function($scope, $http, $interval) {
 		$http.get("/getGroups")
 		.success(function(data) {
 			$scope.groups = data;
+			$scope.groups.push("List Keeper");
 			$scope.groups.push("RFR");
 		}).error(function() {
 			alert("Failed to get groups;");
@@ -49,7 +52,7 @@ app.controller("SeatController", function($scope, $http, $interval) {
 		}
 		if($scope.workingSeat == null || $scope.realSeat ==null){
 			return null;
-		}else if($scope.workingSeat == tempGroup){
+		}else if($scope.workingSeat == tempGroup || $scope.realSeat == "RFR"){
 			return $scope.realSeat;
 		}else{
 			return $scope.workingSeat +"@"+$scope.realSeat;
@@ -221,6 +224,31 @@ app.controller("SeatController", function($scope, $http, $interval) {
 		}else{
 			return false;
 		}
+	}
+	
+	$scope.getStoresNeedChecked =function(){
+		$http.get("/lastCheckedList").success(function(data){
+			$scope.storesNeedChecked = data.slice(0,5);
+		}).error(function(){
+			$scope.storesNeedChecked = null;
+		})
+	}
+	
+	$scope.storesChecked = function(){
+		$http.post("/saveLastChecks", $scope.storesNeedChecked).success(function(){
+			$scope.getStoresNeedChecked();
+		});
+		
+	}
+	
+	$scope.setCutOff = function(num){
+		$http.get("/setCutOff",{
+			params: { number: num}
+		}).success(function(data){
+			$scope.getAdvisoryLevel();
+		}).error(function(){
+			alert("Group Change Failed");
+		})
 	}
 	
 	$scope.seatUpdater();

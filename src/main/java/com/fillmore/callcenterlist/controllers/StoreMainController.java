@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fillmore.callcenterlist.domain.Account;
 import com.fillmore.callcenterlist.domain.AdvisoryLevel;
+import com.fillmore.callcenterlist.domain.Bulletin;
 import com.fillmore.callcenterlist.domain.ReliefRequest;
 import com.fillmore.callcenterlist.domain.Seat;
 import com.fillmore.callcenterlist.domain.Store;
 import com.fillmore.callcenterlist.repository.AccountRepository;
+import com.fillmore.callcenterlist.repository.BulletinRepository;
 import com.fillmore.callcenterlist.repository.RequestRepository;
 import com.fillmore.callcenterlist.repository.SeatRepository;
 import com.fillmore.callcenterlist.repository.StoreRepository;
@@ -29,6 +31,9 @@ public class StoreMainController {
 
 	@Autowired
 	private StoreRepository storeRepository;
+	
+	@Autowired
+	private BulletinRepository bulletinRepository;
 	
 	@Autowired
 	private SeatRepository seatRepository;
@@ -156,6 +161,7 @@ public class StoreMainController {
 		request.setFufillmentSeat(seat_num);
 		request.setFufillingUser(SecurityContextHolder.getContext().getAuthentication().getName());
 		request.setTimeFufilled(new Date());
+		request.getStore().setLastChecked(new Date());
 		if(!request.isBathroomBreak()){
 			advisoryLevel.addLapTime(request.getTimeFufilled().getTime() - request.getTimeRequested().getTime());
 		}
@@ -271,4 +277,51 @@ public class StoreMainController {
 	public void saveAccount(@RequestBody Account account){
 		accountRepository.save(account);
 	}
+	
+	@RequestMapping("/lastCheckedList")
+	public List<Store> getLastCheckedOrder(){
+		return storeRepository.getLastCheckedOrder();
+	}
+	
+	@RequestMapping("/saveLastChecks")
+	public void saveLastChecks(@RequestBody List<Store> stores) {
+		for(Store store: stores){
+			store.setLastChecked(new Date());
+		}
+		storeRepository.save(stores);
+
+	}
+	
+	@RequestMapping("/postBulletin")
+	public int newBulletin(@RequestBody String note){
+		Bulletin bullet = new Bulletin();
+		bullet.setContent(note);
+		bullet.setPosted(new Date());
+		bullet.setName(
+				accountRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getFullName()
+				);
+		long theFuture = System.currentTimeMillis() + (86400 * 7 * 1000*2);
+		Date twoWeeks = new Date(theFuture);
+		bullet.setExpires(twoWeeks);
+		bulletinRepository.save(bullet);
+		return bullet.getId();
+		
+	}
+	
+	@RequestMapping("/updateBulletin")
+	public void updateBulletin(@RequestParam("id")int id, @RequestParam("alert") boolean alert, @RequestParam("life") int life){
+		Bulletin bullet = bulletinRepository.findById(id);
+		bullet.setAlert(alert);
+		long theFuture = System.currentTimeMillis() + (86400 * 7 * 1000 * (long) life);
+		log.info(life);
+		Date weeks = new Date(theFuture);
+		bullet.setExpires(weeks);
+		bulletinRepository.save(bullet);
+	}
+	
+	@RequestMapping("/getBulletins")
+	public List<Bulletin> getBulletins(){
+		return bulletinRepository.findByExpired(false);
+	}
+	
 }

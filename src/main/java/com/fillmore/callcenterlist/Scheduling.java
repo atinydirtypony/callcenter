@@ -6,6 +6,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.fillmore.callcenterlist.domain.AdvisoryLevel;
+import com.fillmore.callcenterlist.domain.Bulletin;
+import com.fillmore.callcenterlist.repository.BulletinRepository;
 import com.fillmore.callcenterlist.repository.RequestRepository;
 
 @Configuration
@@ -13,6 +15,9 @@ import com.fillmore.callcenterlist.repository.RequestRepository;
 public class Scheduling {
 	@Autowired
 	private AdvisoryLevel advisoryLevel;
+	
+	@Autowired
+	private BulletinRepository bulletinRepository;
 	
 	@Autowired
 	private RequestRepository requestRepository;
@@ -24,6 +29,11 @@ public class Scheduling {
 	
 	@Scheduled(cron ="0 0 9 * * *")
 	public void adviseReset(){
+		advisoryLevel.reset();
+	}
+	
+	@Scheduled(cron ="0 0 22 * * *")
+	public void bulletinExpCheck(){
 		advisoryLevel.reset();
 	}
 }

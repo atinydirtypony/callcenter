@@ -3,14 +3,15 @@
 <link rel="stylesheet" href="css/bootstrap.min.css"/>
 <script type="text/javascript" src="js/angular.min.js"></script>
 <link rel="stylesheet" href="css/home.css"> </link>
-<script type="text/javascript" src="js/home.js"></script>
+
 <link rel="stylesheet" href="css/callcenter.css"/>
 <script type="text/javascript" src="js/callcenter.js"></script>
 <script type="text/javascript" src="js/editstores.js"></script>
 <script type="text/javascript" src="js/seat.js"></script>
 <script type="text/javascript" src="js/admin.js"></script>
 <script type="text/javascript" src="js/editaccounts.js"></script>
-
+<script type="text/javascript" src="js/bulletin.js"></script>
+<script type="text/javascript" src="js/home.js"></script>
 
 </head>
 
@@ -53,6 +54,9 @@
 								<li sec:authorize="principal.getCert('')"
 									ng-click="view ='admin'"
 									ng-class="{'active': view == 'admin'}"><a href="#">Administration</a></li>
+								<li sec:authorize="principal.getCert('')"
+									ng-click="view ='bulletin'"
+									ng-class="{'active': view == 'bulletin'}"><a href="#">Bulletins</a></li>
 							</ul>
 						</div>
 						<!-- /.navbar-collapse -->
@@ -91,27 +95,23 @@
 			<div class="col-sm-8">
 
 				<!-- Home Content -->
-				<div class="home_content card" ng-if="view=='home'">
+				<div ng-controller="HomeController" class="home_content card" ng-if="view=='home'" ng-init="getBulletins()">
 					<h2 class="page-header">Giant Eagle Pharmacy Call Center</h2>
-					<p class="lead">Lorem ipsum dolor sit amet, consectetur
-						adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-						dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-						exercitation ullamco laboris nisi</p>
-					<p>Possible uses for this page...</p>
-					<ul>
-						<li>Global Announcements</li>
-						<li>Links to department documents</li>
-						<li>Other...</li>
+					<ul style= "list-style-type: none;">
+						<li ng-repeat="bullet in bulletins" style="border: 2px solid; border-radius: 18px; margin-bottom:5px;" ng-class="{'bulletAlert': bullet.alert}">
+						<h4 style="padding:4px;">{{bullet.name}} -- {{bulletinDate(bullet)}}</h4>
+						<p class="col-xs-offset-1">{{bullet.content}}</p>
+						</li>
 					</ul>
 				</div>
 
 				<!-- Seat Content -->
 				<div class="seat_content card" ng-if="view=='seat'"
 					ng-controller="SeatController" ng-init= "getGroups()">
-					<select  ng-model="realSeat" ng-change="defaultGroup()">
+					<select class="form-control col-md-2" ng-model="realSeat" ng-change="defaultGroup()">
 						<option ng-repeat="seat in allSeats">{{seat.label}}</option>
 					</select>
-					<select  ng-model="workingSeat" ng-change="getStores()">
+					<select  class="form-control col-md-2" ng-model="workingSeat" ng-change="getStores()">
 						<option ng-repeat="seat in groups">{{seat}}</option>
 					</select>
 					
@@ -125,6 +125,13 @@
 							Request</button>
 						<button class="btn btn-primary col-xs-offset-2 col-xs-3" ng-click="calledRequest()"
 							ng-if="isRFR">Store Call</button>
+					</div>
+					
+					<div class="row" style="margin-top:10px;">
+						<button class="btn col-xs-offset-2 col-xs-3" ng-click="setCutOff(advisoryLevel.cutOff - 5)" 
+							ng-if="workingSeat == 'List Keeper'">Cut Off -</button>
+						<button class="btn col-xs-offset-2 col-xs-3" ng-click="setCutOff(advisoryLevel.cutOff + 5)"
+							ng-if="workingSeat == 'List Keeper'">Cut Off +</button>
 					</div>
 					
 					<div ng-if="isRFR">
@@ -151,13 +158,53 @@
 						</div>
 					</div>
 					
+					<div class="RFStores" ng-if="workingSeat == 'List Keeper'" ng-init="getStoresNeedChecked()">
+						<h3 class="page-header">Stores To Check</h3> 
+						<div class="row" style="padding-left:30px; padding-right:30px; padding-bottom:30px">
+						<button class="btn btn-success col-xs-offset-4 col-xs-4" style="margin-bottom:12px;height:30px;font-size:12pt;" ng-click="storesChecked()">Stores Checked</button>
+							<div class="col-xs-12">
+								<button class="btn btn-info" style="margin:10px; width:15%; height:60px;font-size:18pt;" ng-repeat="store in storesNeedChecked"
+									ng-click="putOnList(store.idNumber)">{{store.idNumber}}</button>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				
+				<div sec:authorize="principal.getCert('')" ng-controller="BulletinController" class="bulletin_content card" style="height:600px;" ng-if="view=='bulletin'">
+					<h2 class="page-header">Bulletins</h2>
+					<div class="form-group col-xs-5">
+					    <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
+					    <div class="input-group">
+					      <div class="input-group-addon  cols-xs-2">Expires in: </div>
+					      	<select class="form-control" ng-model="life" id="lifespan">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+								<option>6</option>
+								<option>7</option>
+								<option>8</option>
+								<option>9</option>
+							</select>
+					      <div class="input-group-addon"> weeks</div>
+					    </div>
+					 </div>
+					<label for="alert" style="padding:10px;">High Priority 
+						<input ng-model="alert" type="checkbox" id="alert"/>
+					</label>
+					<button ng-click="postBulletin()" id="bulletinPost" class="btn btn-success col-xs-offset-3">Post to Board</button>
+					<div class="form" style="padding-bottom:10px;">
+						<textarea ng-model="note" style="width:100%; height: 70%;" row="50" cols="100"/>
+					</div>
 				</div>
 
 				<!-- Admin Content -->
 				<div sec:authorize="principal.getCert('')" ng-controller="AdminController" class="admin_content card" ng-if="view=='admin'">
 					<h2 class="page-header">Call Center Administration</h2>
 					    <div class="col-sm-9" style="padding-bottom:10px">
-					      <input ng-model="cutOff_temp" type="text" class="form-control" id="set_cutOff" placeholder="Cut Off Number"/>
+					      <input ng-model="set_cutOff" type="text" class="form-control" id="set_cutOff" placeholder="Cut Off Number"/>
 					     
 					    </div>
 					    <button class = "btn btn-default" ng-click="setCutOff(set_cutOff)" style="margin-bottom:10px">Set Cut Off</button>

@@ -19,6 +19,9 @@ public interface StoreRepository extends CrudRepository<Store, Integer> {
 	
 	public List<Store> findBysatGroup(String seat);
 	
+	@Query("from Store s order by s.lastChecked asc")
+	public List<Store> getLastCheckedOrder();
+	
 	@Query("Select distinct s.aGroup from Store s order by s.aGroup asc")
 	public List<Integer> findAGroups();
  	

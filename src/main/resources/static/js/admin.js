@@ -2,6 +2,7 @@ app.controller("AdminController", function($scope, $http, $interval) {
 	$scope.store_num =null;
 	$scope.set_cutOff =null;
 	
+	
 	$scope.changeGroups = function(groups){
 		$http.get("/changeGroup",{
 			params: { group: groups}
@@ -13,7 +14,8 @@ app.controller("AdminController", function($scope, $http, $interval) {
 	}
 	
 	$scope.setCutOff = function(num){
-		console.log(num);
+		//console.log(num);
+		//num = num.parseInt();
 		$http.get("/setCutOff",{
 			params: { number: num}
 		}).success(function(data){

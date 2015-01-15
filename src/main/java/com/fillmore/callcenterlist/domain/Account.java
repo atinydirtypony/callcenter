@@ -107,6 +107,11 @@ public class Account implements UserDetails {
 			
 		}
 	}
+	
+	public String getFullName(){
+		return this.firstName.concat(" ").concat(this.lastName);
+	}
+	
 	@Transient
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
