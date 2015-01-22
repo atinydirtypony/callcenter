@@ -6,6 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.Type;
+
+
 @Entity
 public class Bulletin {
 	
@@ -17,6 +20,8 @@ public class Bulletin {
 	private Date posted;
 	private Date expires;
 	private boolean expired=false;
+	
+	@Type(type="text")
 	private String content;
 	private boolean alert=false;
 	

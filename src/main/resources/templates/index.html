@@ -12,7 +12,7 @@
 <script type="text/javascript" src="js/editaccounts.js"></script>
 <script type="text/javascript" src="js/bulletin.js"></script>
 <script type="text/javascript" src="js/home.js"></script>
-
+<script type="text/javascript" src="js/rphhelp.js"></script>
 </head>
 
 <body ng-controller="MainController" ng-init="getList()">
@@ -24,7 +24,7 @@
 			<div class="col-xs-12">
 				<div id="logo" class="pull-left"></div>
 				<h1 class="pull-left hidden-xs">Pharmacy Call Center</h1>
-				<div>
+				<div class="col-md-3 pull-right" style="margin-top:50px;">
 					<span sec:authentication = "principal.firstName" ></span>
 					<span sec:authentication = "principal.lastName" ></span>
 					<button><a href= "/logout">Logout</a></button>
@@ -57,6 +57,9 @@
 								<li sec:authorize="principal.getCert('')"
 									ng-click="view ='bulletin'"
 									ng-class="{'active': view == 'bulletin'}"><a href="#">Bulletins</a></li>
+								<li sec:authorize="principal.getCert('')"
+									ng-click="view ='rphhelp'"
+									ng-class="{'active': view == 'rphhelp'}"><a href="#">RPH Requests</a></li>
 							</ul>
 						</div>
 						<!-- /.navbar-collapse -->
@@ -85,7 +88,7 @@
 					<div class="col-xs-12">
 						<div class="card">
 							<h3 class="text-center" style="margin-top:5px; text-transform:uppercase;">The List</h3>
-							<h4 class="text-center" ng-repeat="requests in bathroomRequest">C35 @ {{requests.seatNum}}</h4>
+							<h4 class="text-center" ng-repeat="requests in bathroomRequest">C35 @ {{requests.stamps[0].seat}}</h4>
 							<h4 class="text-center" ng-repeat="requests in requestList">{{pad(requests.store.idNumber,4)}}</h4>
 						</div>
 					</div>
@@ -97,34 +100,81 @@
 				<!-- Home Content -->
 				<div ng-controller="HomeController" class="home_content card" ng-if="view=='home'" ng-init="getBulletins()">
 					<h2 class="page-header">Giant Eagle Pharmacy Call Center</h2>
-					<ul style= "list-style-type: none;">
+					<ul class = "pre-scrollable" style= "list-style-type: none;">
 						<li ng-repeat="bullet in bulletins" style="border: 2px solid; border-radius: 18px; margin-bottom:5px;" ng-class="{'bulletAlert': bullet.alert}">
 						<h4 style="padding:4px;">{{bullet.name}} -- {{bulletinDate(bullet)}}</h4>
 						<p class="col-xs-offset-1">{{bullet.content}}</p>
 						</li>
 					</ul>
 				</div>
+				
+				<!-- RPH Request Content -->
+				<div ng-controller="RPHController" class="home_content card" ng-if="view=='rphhelp'">
+					<h2 class="page-header">RPH Requests</h2>
+					<div class = "row">
+						<h3 class="page-header" style="padding-left: 4%;">Seats Requesting an RPH</h3>
+						
+							<div class="row">
+							<ul>
+								<li class = "cols-xs-2" style="list-style-type: none; float:left; padding:4px;" ng-repeat="request in RPHList"><pre>{{displayRequest(request)}}</pre>
+								</li>
+							</ul>
+							</div>
+							<button class="btn btn-warning col-xs-offset-4 col-xs-4" ng-click="takeRequest()">Get
+							Request</button>
+					</div>
+
+					<div class = "row">
+					
+						<h3 style="padding-left: 4%;" class="page-header">Your Active Relief Requests</h3>
+							<ul>
+								<li class="col-xs-3" ng-repeat="request in yourRequests">{{displayRequest(request)}}
+									<button style="padding: 4px;" class="btn btn-success"
+										ng-click="finishRPHRequest(request.id)">Finish</button>
+								</li>
+							</ul>
+					</div>
+				</div>
 
 				<!-- Seat Content -->
 				<div class="seat_content card" ng-if="view=='seat'"
 					ng-controller="SeatController" ng-init= "getGroups()">
-					<select class="form-control col-md-2" ng-model="realSeat" ng-change="defaultGroup()">
-						<option ng-repeat="seat in allSeats">{{seat.label}}</option>
-					</select>
-					<select  class="form-control col-md-2" ng-model="workingSeat" ng-change="getStores()">
-						<option ng-repeat="seat in groups">{{seat}}</option>
-					</select>
 					
 					<h2 class="page-header">Tasks <small ng-if="getSeat() != null">Seat {{getSeat()}}</small></h2>
 					<p class="lead">General options based on your currently assigned seat role.</p>
 					
+					<div class="row" style="margin-bottom: 4px;">
+							<div class="col-md-offset-1 col-md-4">
+								<div class="input-group">
+								<div class="input-group-addon">Seat: </div>
+								<select class="form-control" ng-model="realSeat" ng-change="defaultGroup()">
+									<option ng-repeat="seat in allSeats">{{seat.label}}</option>
+								</select>
+								</div>
+							</div>
+							<div class="col-md-offset-2 col-md-4">
+								<div class="input-group">
+								<div class="input-group-addon">Group: </div>
+								<select class="form-control" ng-model="workingSeat" ng-change="getStores()">
+									<option ng-repeat="seat in groups">{{seat}}</option>
+								</select>
+								</div>
+							</div>
+
+					</div>
+					
+					
 					<div class="row">
-						<button class="btn btn-danger col-xs-offset-4 col-xs-4" ng-click="C35()"
+						<button class = "btn btn-danger col-xs-2 col-xs-offset-2" ng-click="requestRPH()" ng-if="realSeat!=null">Request RPH</button>
+						<button class="btn btn-danger col-xs-offset-4 col-xs-2" ng-click="C35()"
 							ng-if="!isRFR &amp;&amp; getSeat() != null">Request C35</button>
-						<button class="btn btn-warning col-xs-offset-2 col-xs-3" ng-click="rfCall()" ng-if="isRFR">Get
+						<button class="btn btn-warning col-xs-offset-1 col-xs-2" ng-click="rfCall()" ng-if="isRFR">Get
 							Request</button>
-						<button class="btn btn-primary col-xs-offset-2 col-xs-3" ng-click="calledRequest()"
+						<button class="btn btn-primary col-xs-offset-1 col-xs-2" ng-click="storeCallClick()"
 							ng-if="isRFR">Store Call</button>
+							<select class="form-control col-md-2" ng-model="callStoreNum" ng-change="calledRequest()" ng-show="callClick">
+								<option ng-repeat="store in allStores">{{store.idNumber}}</option>
+							</select>
 					</div>
 					
 					<div class="row" style="margin-top:10px;">
@@ -141,7 +191,7 @@
 								<button class="btn btn-success"
 									ng-click="finishRequest(reliefRequest)">Finish</button>
 								<button class="btn btn-danger"
-									ng-click="putBackRequest(reliefRequest)" ng-if="!reliefRequest.bathroomBreak">Put Back</button>
+									ng-click="putBackRequest(reliefRequest)" ng-if="reliefRequest.type != 'C35' ">Put Back</button>
 								<button class = "btn btn-alert"
 										ng-click="getHelp(reliefRequest)" ng-if="helpCheck(reliefRequest)">Get Help</button>
 							</li>
@@ -174,7 +224,6 @@
 				<div sec:authorize="principal.getCert('')" ng-controller="BulletinController" class="bulletin_content card" style="height:600px;" ng-if="view=='bulletin'">
 					<h2 class="page-header">Bulletins</h2>
 					<div class="form-group col-xs-5">
-					    <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
 					    <div class="input-group">
 					      <div class="input-group-addon  cols-xs-2">Expires in: </div>
 					      	<select class="form-control" ng-model="life" id="lifespan">

@@ -24,8 +24,8 @@ public class Scheduling {
 	
 	@Scheduled(cron="0 */15 * * * *")
 	public void listLengthCheck(){
-		advisoryLevel.cutOffCheck(requestRepository.findBytimeActioned(null));
-	}
+		advisoryLevel.cutOffCheck(requestRepository.findUnactionedRequests());
+	} 
 	
 	@Scheduled(cron ="0 0 9 * * *")
 	public void adviseReset(){

@@ -4,6 +4,7 @@ app.controller("HomeController", function($scope, $http, $interval) {
 	$scope.getBulletins=function(){
 		$http.get("/getBulletins").success(function(data){
 			$scope.bulletins=data;
+			$scope.bulletins.sort(function(a,b){return (b.alert-a.alert)})
 			console.log($scope.bulletins)
 			for(i=0; i<$scope.bulletins.length; i++){
 				console.log($scope.bulletins[i].posted);

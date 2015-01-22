@@ -17,24 +17,25 @@ import com.fillmore.callcenterlist.domain.AdvisoryLevel;
 import com.fillmore.callcenterlist.domain.Bulletin;
 import com.fillmore.callcenterlist.domain.ReliefRequest;
 import com.fillmore.callcenterlist.domain.Seat;
+import com.fillmore.callcenterlist.domain.Stamp;
 import com.fillmore.callcenterlist.domain.Store;
 import com.fillmore.callcenterlist.repository.AccountRepository;
 import com.fillmore.callcenterlist.repository.BulletinRepository;
 import com.fillmore.callcenterlist.repository.RequestRepository;
 import com.fillmore.callcenterlist.repository.SeatRepository;
+import com.fillmore.callcenterlist.repository.StampRepository;
 import com.fillmore.callcenterlist.repository.StoreRepository;
 
 @RestController
 public class StoreMainController {
-
 	private static final Log log = LogFactory.getLog(StoreMainController.class);
 
 	@Autowired
 	private StoreRepository storeRepository;
-	
+
 	@Autowired
 	private BulletinRepository bulletinRepository;
-	
+
 	@Autowired
 	private SeatRepository seatRepository;
 
@@ -43,15 +44,99 @@ public class StoreMainController {
 
 	@Autowired
 	private AdvisoryLevel advisoryLevel;
-	
+
 	@Autowired
 	private AccountRepository accountRepository;
-	
 
-	@RequestMapping("/save")
-	public void saveStore(@RequestBody Store store) {
-		storeRepository.save(store);
+	@Autowired
+	private StampRepository stampRepository;
 
+	@RequestMapping("/calledRequest")
+	public void calledRequest(@RequestParam("store") int storeNum,
+			@RequestParam("seat") String seatNum) {
+		Stamp actionStamp = new Stamp(seatNum, "ACTIONED");
+		ReliefRequest request = new ReliefRequest(actionStamp);
+		Store store = storeRepository.findByIdNumber(storeNum);
+		request.setStore(store);
+		request.setType("CALL");
+		stampRepository.save(actionStamp);
+		List<ReliefRequest> otherRequests = requestRepository.findNonfufulledByStore(store);
+		if (otherRequests.size() != 0) {
+			request.setHelpRequest(true);
+			for (ReliefRequest otherRequest : otherRequests) {
+				otherRequest.addStamp(actionStamp);
+				otherRequest.setBeingHelped(true);
+				requestRepository.save(otherRequest);
+			}
+		}
+		requestRepository.save(request);
+	}
+
+	@RequestMapping("/finishRequest")
+	public void finishRequest(@RequestParam("id") int id_num,
+			@RequestParam("seat") String seatNum) {
+		ReliefRequest request = requestRepository.findById(id_num);
+		Stamp stamp1 = new Stamp(seatNum, "FUFILLED");
+		request.addStamp(stamp1);
+		if (request.getType().equals("DV2")) {
+			request.getStore().setLastChecked(new Date());
+		}
+		if (!request.getStamps().get(0).getType().equals("C35") && !request.getStamps().get(0).getType().equals("CALL")) {
+			advisoryLevel.addLapTime(-(request.getStamps().get(0).getTime()
+					.getTime()
+					- request.getStamps().get(request.getStamps().size() - 1)
+							.getTime().getTime()));
+		}
+		stampRepository.save(stamp1);
+		requestRepository.save(request);
+		ReliefRequest secondary = null;
+		if (request.isHelpRequest() || request.isBeingHelped()) {
+			secondary = requestRepository.getHelperRequest(request.getStamps()
+					.get(0).getStampId(), request.getId());
+		}
+		// log.info(request.isHelpRequest());
+		// log.info(request.isBeingHelped());
+		// log.info(secondary);
+		if (secondary != null) {
+			// log.info("HI!!!");
+			if (!secondary.getStamps().get(secondary.getStamps().size() - 1)
+					.getType().equals("ACTIONED")) {
+				secondary.addStamp(request.getStamps().get(
+						request.getStamps().size() - 2));
+			}
+			Stamp stamp2 = new Stamp(secondary.getStamps()
+					.get(secondary.getStamps().size() - 1).getSeat(),
+					"FUFILLED");
+			secondary.addStamp(stamp2);
+			stampRepository.save(stamp2);
+			requestRepository.save(secondary);
+		}
+
+	}
+
+	@RequestMapping("/putBackRequest")
+	public void putBackRequest(@RequestParam("requestSeat") String seatNum,
+
+	@RequestParam("id") int idNum) {
+		ReliefRequest oldRequest = requestRepository.findById(idNum);
+		Stamp stamp = new Stamp(seatNum, "PUTBACK");
+		oldRequest.addStamp(stamp);
+		stampRepository.save(stamp);
+		requestRepository.save(oldRequest);
+	}
+
+	@RequestMapping("/helpRequest")
+	public void getHelp(@RequestParam("id") int id) {
+		ReliefRequest oldRequest = requestRepository.findById(id);
+		ReliefRequest request = new ReliefRequest(oldRequest.getStamps().get(0));
+		request.setStore(oldRequest.getStore());
+		request.setHelpRequest(true);
+		request.setType("DV2");
+		if (!oldRequest.isBeingHelped() && !oldRequest.isHelpRequest()) {
+			oldRequest.setBeingHelped(true);
+			requestRepository.save(request);
+			requestRepository.save(oldRequest);
+		}
 	}
 
 	@RequestMapping("/addRequest")
@@ -59,24 +144,25 @@ public class StoreMainController {
 			@RequestParam("store") int storeNum,
 			@RequestParam("C35") boolean c35) {
 		boolean preRequested = false;
-		List<ReliefRequest> currentList = requestRepository.findBytimeFufilled(null);
-		ReliefRequest request = new ReliefRequest();
-		request.setSeatNum(seatNum);
-		request.setRequestingUser(SecurityContextHolder.getContext().getAuthentication().getName());
-		request.setTimeRequested(new Date());
-		
-		//log.info("C35:"+c35);
-		
+		List<ReliefRequest> currentList = requestRepository
+				.findUnactionedRequests();
+		Stamp stamp = new Stamp(seatNum, "REQUEST");
+		ReliefRequest request = new ReliefRequest(stamp);
+
 		if (c35) {
-			request.setBathroomBreak(true);
+			request.setType("C35");
 		} else {
+			request.setType("DV2");
 			request.setStore(storeRepository.findByIdNumber(storeNum));
 		}
 
 		for (ReliefRequest reqCheck : currentList) {
-			log.info(reqCheck);
+			log.info("rec seat" + reqCheck.getStamps().get(0).getSeat());
+			log.info("seatnum" + seatNum);
+
 			if (c35) {
-				if (request.getSeatNum() == reqCheck.getSeatNum() && reqCheck.isBathroomBreak()) {
+				if (seatNum.equals(reqCheck.getStamps().get(0).getSeat())
+						&& reqCheck.getType().equals("C35")) {
 					preRequested = true;
 				}
 			} else {
@@ -85,27 +171,42 @@ public class StoreMainController {
 				}
 			}
 		}
-		
-		//log.info("Already on:"+preRequested);
 
-		if (preRequested==false) {
+		// log.info("Already on:"+preRequested); */
+
+		if (preRequested == false) {
+			stampRepository.save(stamp);
 			requestRepository.save(request);
 		}
 
 	}
-	
-	@RequestMapping("/helpRequest")
-	public void getHelp(@RequestParam("id") int id){
-		ReliefRequest oldRequest = requestRepository.findById(id);
-		ReliefRequest request = new ReliefRequest();
-		request.setTimeRequested(oldRequest.getTimeRequested());
-		request.setStore(oldRequest.getStore());
-		request.setHelpRequest(true);
-		request.setOriginalId(oldRequest.getId());
-		if(!oldRequest.isBeingHelped()){
-			oldRequest.setBeingHelped(true);
-			requestRepository.save(request);
+
+	@RequestMapping("/getActiveRequests")
+	public List<ReliefRequest> getActiveRequest() {
+		// log.info(SecurityContextHolder.getContext().getAuthentication().getName());
+		return requestRepository.findUsersActionedItems(SecurityContextHolder
+				.getContext().getAuthentication().getName());
+	}
+
+	@RequestMapping("/getList")
+	public List<ReliefRequest> getTheList() {
+		return requestRepository.findUnactionedRequests();
+	}
+
+	@RequestMapping("/getRequest")
+	public ReliefRequest getRequest(@RequestParam("seat") String seatNum) {
+		List<ReliefRequest> requests = requestRepository
+				.getOldestActiveBathroomBreak();
+		if (requests.isEmpty()) {
+			requests = requestRepository.getOldestActiveStoreRequest();
 		}
+		ReliefRequest request = requests.get(0);
+		// log.info(request);
+		Stamp stamp = new Stamp(seatNum, "ACTIONED");
+		request.addStamp(stamp);
+		stampRepository.save(stamp);
+		requestRepository.save(request);
+		return request;
 	}
 
 	@RequestMapping("/storeById")
@@ -128,200 +229,165 @@ public class StoreMainController {
 		}
 	}
 
-	@RequestMapping("/getList")
-	public List<ReliefRequest> getTheList() {
-		return requestRepository.findBytimeActioned(null);
-	}
-	
-	@RequestMapping("/getRequest")
-	public ReliefRequest getRequest(@RequestParam("seat") String seat_num) {
-		List<ReliefRequest> requests =requestRepository.getOldestActiveBathroomBreak();
-		if(requests.isEmpty()){
-			requests = requestRepository.getOldestActiveStoreRequest();
-		}
-		ReliefRequest request = requests.get(0);
-		//log.info(request);
-		request.setActionSeat(seat_num);
-		request.setActioningUser(SecurityContextHolder.getContext().getAuthentication().getName());
-		request.setTimeActioned(new Date());
-		requestRepository.save(request);
-		return request;
-	}
-	
-
-	@RequestMapping("/getActiveRequests")
-	public List<ReliefRequest> getActiveRequest() {
-		log.info(SecurityContextHolder.getContext().getAuthentication().getName());
-		return requestRepository.findBytimeFufilledAndActioningUser(null, SecurityContextHolder.getContext().getAuthentication().getName());
-	}
-	
-	@RequestMapping("/finishRequest")
-	public void finishRequest(@RequestParam("id") int id_num, @RequestParam("seat") String seat_num){
-		ReliefRequest request = requestRepository.findById(id_num);
-		request.setFufillmentSeat(seat_num);
-		request.setFufillingUser(SecurityContextHolder.getContext().getAuthentication().getName());
-		request.setTimeFufilled(new Date());
-		request.getStore().setLastChecked(new Date());
-		if(!request.isBathroomBreak()){
-			advisoryLevel.addLapTime(request.getTimeFufilled().getTime() - request.getTimeRequested().getTime());
-		}
-		requestRepository.save(request);
-		if(!seat_num.equals("N/F")){
-			ReliefRequest secondary = null;
-			if(request.isHelpRequest()){
-				secondary = requestRepository.findById(request.getOriginalId());
-			}else if(request.isBeingHelped()){
-				secondary = requestRepository.findByOriginalId(request.getId());
-			}
-			//log.info(request.isHelpRequest());
-			//log.info(request.isBeingHelped());
-			//log.info(secondary);
-			if(secondary != null){
-				//log.info("HI!!!");
-				secondary.setTimeFufilled(new Date());
-				secondary.setFufillingUser(secondary.getActioningUser());
-				secondary.setFufillmentSeat(secondary.getActionSeat());
-				if(secondary.getTimeActioned()==null){
-					secondary.setTimeActioned(new Date());
-				}
-				requestRepository.save(secondary);
-			}
-		}
-	}
-	
-	
-	@RequestMapping("/putBackRequest")
-	public void otherRequest(@RequestParam("requestSeat") String reqSeat, @RequestParam("id") int idNum){
-		ReliefRequest request = new ReliefRequest();
-		ReliefRequest oldRequest = requestRepository.findById(idNum);
-		request.setSeatNum(reqSeat);
-		request.setRequestingUser(SecurityContextHolder.getContext().getAuthentication().getName());
-		request.setBathroomBreak(oldRequest.isBathroomBreak());
-		request.setStore(oldRequest.getStore());
-		request.setTimeRequested(oldRequest.getTimeRequested());
-		request.setBeingHelped(oldRequest.isBeingHelped());
-		request.setHelpRequest(oldRequest.isHelpRequest());
-		requestRepository.save(request);
-		this.finishRequest(idNum, "N/F");
-	}
-	
-	@RequestMapping("/calledRequest")
-	public void calledRequest(@RequestParam("store") int storeNum, @RequestParam("seat") String seat){
-		ReliefRequest request = new ReliefRequest();
-		request.setActionSeat(seat);
-		request.setActioningUser(SecurityContextHolder.getContext().getAuthentication().getName());
-		request.setSeatNum("CALL");
-		request.setRequestingUser("CALL");
-		Store store = storeRepository.findByIdNumber(storeNum);
-		request.setStore(store);
-		request.setTimeActioned(new Date());
-		request.setTimeRequested(new Date());
-		List<ReliefRequest> otherRequests = requestRepository.findByStore(store);
-		if(otherRequests.size() != 0){
-			for(ReliefRequest otherRequest : otherRequests){
-				otherRequest.setActionSeat(seat);
-				otherRequest.setTimeActioned(new Date());
-				this.finishRequest(otherRequest.getId(), "CALL");
-			}
-		}
-		requestRepository.save(request);
-	}
-	
-	
-	@RequestMapping("/getJavaDate")
-	public Date sendJavaDate(){
-		return new Date();
-	}
-	
-	@RequestMapping("/getAdvisory")
-	public AdvisoryLevel getAdvisory(){
-		return advisoryLevel;
-	}
-	
-	@RequestMapping("/changeGroup")
-	public void changeGroups(@RequestParam("group") String group){
-		//log.info(group);
-		if( group.equals("Sat")){
-			advisoryLevel.changeToSat();
-		}else if(group.equals("A")){
-			advisoryLevel.changeToA();
-		}else if(group.equals("B")){
-			advisoryLevel.changeToB();
-		}else{
-			advisoryLevel.changeToC();
-		}
-		//log.info(advisoryLevel.getLevel());
-	}
-	
 	@RequestMapping("/setCutOff")
-	public void setCutOff(@RequestParam("number") int num){
+	public void setCutOff(@RequestParam("number") int num) {
 		advisoryLevel.setCutOff(num);
 	}
-	
+
 	@RequestMapping("/getGroups")
-	public List<Integer> getCurrentGroups(){
+	public List<Integer> getCurrentGroups() {
 		return storeRepository.findAGroups();
 	}
-	
+
 	@RequestMapping("/getSeats")
-	public List<Seat> getSeats(){
+	public List<Seat> getSeats() {
 		return seatRepository.findAll();
 	}
-	
+
 	@RequestMapping("/accountByUsername")
-	public Account accountByUserName(@RequestParam("id") String name){
+	public Account accountByUserName(@RequestParam("id") String name) {
 		return accountRepository.findByUsername(name);
 	}
-	
+
 	@RequestMapping("/saveAccount")
-	public void saveAccount(@RequestBody Account account){
+	public void saveAccount(@RequestBody Account account) {
 		accountRepository.save(account);
 	}
-	
+
 	@RequestMapping("/lastCheckedList")
-	public List<Store> getLastCheckedOrder(){
+	public List<Store> getLastCheckedOrder() {
 		return storeRepository.getLastCheckedOrder();
 	}
-	
+
 	@RequestMapping("/saveLastChecks")
 	public void saveLastChecks(@RequestBody List<Store> stores) {
-		for(Store store: stores){
+		for (Store store : stores) {
 			store.setLastChecked(new Date());
 		}
 		storeRepository.save(stores);
 
 	}
-	
+
 	@RequestMapping("/postBulletin")
-	public int newBulletin(@RequestBody String note){
+	public int newBulletin(@RequestBody String note) {
 		Bulletin bullet = new Bulletin();
 		bullet.setContent(note);
 		bullet.setPosted(new Date());
-		bullet.setName(
-				accountRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getFullName()
-				);
-		long theFuture = System.currentTimeMillis() + (86400 * 7 * 1000*2);
+		bullet.setName(accountRepository.findByUsername(
+				SecurityContextHolder.getContext().getAuthentication()
+						.getName()).getFullName());
+		long theFuture = System.currentTimeMillis() + (86400 * 7 * 1000 * 2);
 		Date twoWeeks = new Date(theFuture);
 		bullet.setExpires(twoWeeks);
 		bulletinRepository.save(bullet);
 		return bullet.getId();
-		
+
 	}
-	
+
 	@RequestMapping("/updateBulletin")
-	public void updateBulletin(@RequestParam("id")int id, @RequestParam("alert") boolean alert, @RequestParam("life") int life){
+	public void updateBulletin(@RequestParam("id") int id,
+			@RequestParam("alert") boolean alert, @RequestParam("life") int life) {
 		Bulletin bullet = bulletinRepository.findById(id);
 		bullet.setAlert(alert);
-		long theFuture = System.currentTimeMillis() + (86400 * 7 * 1000 * (long) life);
+		long theFuture = System.currentTimeMillis()
+				+ (86400 * 7 * 1000 * (long) life);
 		log.info(life);
 		Date weeks = new Date(theFuture);
 		bullet.setExpires(weeks);
 		bulletinRepository.save(bullet);
 	}
-	
+
 	@RequestMapping("/getBulletins")
-	public List<Bulletin> getBulletins(){
+	public List<Bulletin> getBulletins() {
 		return bulletinRepository.findByExpired(false);
+	}
+
+	@RequestMapping("/save")
+	public void saveStore(@RequestBody Store store) {
+		storeRepository.save(store);
+
+	}
+
+	@RequestMapping("/getJavaDate")
+	public Date sendJavaDate() {
+		return new Date();
+	}
+
+	@RequestMapping("/getAdvisory")
+	public AdvisoryLevel getAdvisory() {
+		return advisoryLevel;
+	}
+
+	@RequestMapping("/changeGroup")
+	public void changeGroups(@RequestParam("group") String group) {
+		// log.info(group);
+		if (group.equals("Sat")) {
+			advisoryLevel.changeToSat();
+		} else if (group.equals("A")) {
+			advisoryLevel.changeToA();
+		} else if (group.equals("B")) {
+			advisoryLevel.changeToB();
+		} else {
+			advisoryLevel.changeToC();
+		}
+		// log.info(advisoryLevel.getLevel());
+	}
+
+	@RequestMapping("/getAllStores")
+	public List<Store> getAllStores(){
+		return storeRepository.findAll();
+	}
+	
+	@RequestMapping("/addRPHRequest")
+	public void addRPHrequest(@RequestParam("seat") String seatNum) {
+		boolean preRequested = false;
+		List<ReliefRequest> currentList = requestRepository.findUnactionedRPHRequests();
+		Stamp stamp = new Stamp(seatNum, "REQUEST");
+		ReliefRequest request = new ReliefRequest(stamp);
+		request.setType("RPH");
+
+		for (ReliefRequest reqCheck : currentList) {
+				if (seatNum.equals(reqCheck.getStamps().get(0).getSeat())) {
+					preRequested = true;
+				}
+			}
+		if(!preRequested){
+			stampRepository.save(stamp);
+			requestRepository.save(request);
+		}
+		}
+	
+	@RequestMapping("/getRPHrequests")
+	public List<ReliefRequest> getRPHrequests(){
+		return requestRepository.findUnactionedRPHRequests();
+	}
+	
+	@RequestMapping("/getActiveRPHRequests")
+	public List<ReliefRequest> getActiveRPHRequest() {
+		// log.info(SecurityContextHolder.getContext().getAuthentication().getName());
+		return requestRepository.findRPHActionedItems(SecurityContextHolder
+				.getContext().getAuthentication().getName());
+	}
+
+	@RequestMapping("/takeRPHRequest")
+	public ReliefRequest getRPHRequest() {
+		List<ReliefRequest> requests = requestRepository.getOldestActiveRPHRequest();
+		ReliefRequest request = requests.get(0);
+		// log.info(request);
+		Stamp stamp = new Stamp("RPH", "ACTIONED");
+		request.addStamp(stamp);
+		stampRepository.save(stamp);
+		requestRepository.save(request);
+		return request;
+	}
+	
+	@RequestMapping("/finishRPHRequest")
+	public void finishRPHRequest(@RequestParam("id") int id){
+		ReliefRequest request = requestRepository.findById(id);
+		Stamp stamp = new Stamp("RPH", "FUFILLED");
+		request.addStamp(stamp);
+		stampRepository.save(stamp);
+		requestRepository.save(request);
 	}
 	
 }

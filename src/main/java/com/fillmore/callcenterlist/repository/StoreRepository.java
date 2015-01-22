@@ -19,6 +19,8 @@ public interface StoreRepository extends CrudRepository<Store, Integer> {
 	
 	public List<Store> findBysatGroup(String seat);
 	
+	public List<Store> findAll();
+	
 	@Query("from Store s order by s.lastChecked asc")
 	public List<Store> getLastCheckedOrder();
 	

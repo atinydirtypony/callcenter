@@ -6,6 +6,10 @@ app.controller("SeatController", function($scope, $http, $interval) {
 	$scope.workingSeat = null;
 	$scope.realSeat = null;
 	$scope.storesNeedChecked=null;
+	$scope.allStores=[];
+	$scope.callStoreNum=null;
+	
+	$scope.callClick = false;
 
 	
 	$scope.allSeats = null;
@@ -30,7 +34,7 @@ app.controller("SeatController", function($scope, $http, $interval) {
 	}
 	
 	$scope.defaultGroup = function(){
-		//console.log($scope.realSeat);
+		console.log($scope.realSeat);
 		if($scope.realSeat.indexOf("RF") >=0){
 			tempGroup = $scope.realSeat.slice(2);
 			//console.log(tempGroup);
@@ -59,24 +63,18 @@ app.controller("SeatController", function($scope, $http, $interval) {
 		}
 	}
 	
-	/*$scope.setSeat = function(look_up){
-		// console.log("***");
-		$scope.seat_lookup = look_up;
-		// console.log("***");
-
-		var i=$scope.seat_lookup.indexOf("@");
-		console.log($scope.seat_lookup);
-		if(i>=0){
-			$scope.realSeat=parseInt($scope.seat_lookup.slice(i+1));
-			$scope.workingSeat=parseInt($scope.seat_lookup.slice(0,i));
-			$scope.seat_lookup=null;
-			// console.log(workingSeat+"+"+realSeat);
-		}else{
-			$scope.workingSeat=parseInt($scope.seat_lookup);
-			$scope.realSeat=parseInt($scope.seat_lookup);
-			console.log($scope.workingSeat+"+"+$scope.realSeat);
-		}
-	}*/
+	/*
+	 * $scope.setSeat = function(look_up){ // console.log("***");
+	 * $scope.seat_lookup = look_up; // console.log("***");
+	 * 
+	 * var i=$scope.seat_lookup.indexOf("@"); console.log($scope.seat_lookup);
+	 * if(i>=0){ $scope.realSeat=parseInt($scope.seat_lookup.slice(i+1));
+	 * $scope.workingSeat=parseInt($scope.seat_lookup.slice(0,i));
+	 * $scope.seat_lookup=null; // console.log(workingSeat+"+"+realSeat); }else{
+	 * $scope.workingSeat=parseInt($scope.seat_lookup);
+	 * $scope.realSeat=parseInt($scope.seat_lookup);
+	 * console.log($scope.workingSeat+"+"+$scope.realSeat); } }
+	 */
 	
 
 	
@@ -109,7 +107,7 @@ app.controller("SeatController", function($scope, $http, $interval) {
 			params : {seat : $scope.realSeat ,store: store, C35: false}
 				
 		}).success(function(data) {
-			//alert("Store: "+store+ " ==> Requested");
+			// alert("Store: "+store+ " ==> Requested");
 			$scope.getList();
 		}).error(function() {
 			alert("Request Failed");
@@ -137,8 +135,8 @@ app.controller("SeatController", function($scope, $http, $interval) {
 	}
 	
 	$scope.displayRequest =function(request){
-		if(request.bathroomBreak){
-			return "C35 @ "+request.seatNum;
+		if(request.type == "C35"){
+			return "C35 @ "+request.stamps[0].seat;
 		}else{
 			return "Store: "+ request.store.idNumber;
 		}
@@ -151,7 +149,7 @@ app.controller("SeatController", function($scope, $http, $interval) {
 			params: {seat : $scope.realSeat, store: 0, C35: true}
 		}).success(function(data) {
 			$scope.getList();
-			//alert("C35 Requested");
+			// alert("C35 Requested");
 		}).error(function() {
 			alert("Request Failed");
 		})
@@ -163,7 +161,7 @@ app.controller("SeatController", function($scope, $http, $interval) {
 			params: {seat : $scope.realSeat, id: request.id}
 		}).success(function(data) {
 			$scope.getYourRequests();
-			//alert("TaskCompleted");
+			// alert("TaskCompleted");
 		}).error(function() {
 			alert("Request Failed");
 		})
@@ -177,7 +175,7 @@ app.controller("SeatController", function($scope, $http, $interval) {
 		}).success(function(){
 			$scope.getYourRequests();
 			$scope.getList();
-			//alert("Task Returned");
+			// alert("Task Returned");
 		}).error(function(){
 			alert("Request failed");
 		})
@@ -186,15 +184,30 @@ app.controller("SeatController", function($scope, $http, $interval) {
 	}
 	
 	$scope.calledRequest = function(){
-		store_num = prompt("What store called?");
+		console.log("SCOPE", $scope)
+		console.log($scope.callStoreNum);
 		$http.get("/calledRequest",{
-			params: {store: store_num, seat: $scope.realSeat}
+			params: {store: $scope.callStoreNum, seat: $scope.realSeat}
 		}).success(function(){
 			$scope.getYourRequests();
-			//alert("Call Added");
+			$scope.callClick = false;
+			// alert("Call Added");
 		}).error(function(){
 			alert("Request failed");
 		})
+	}
+	
+	$scope.storeCallClick=function(){
+		if(!$scope.callClick){
+			$http.get("/getAllStores")
+			.success(function(data){
+				$scope.allStores=data;
+				$scope.callClick = true;
+				console.log($scope.allStores);
+			});
+		}else{
+			$scope.callClick = false;
+		}
 	}
 	
 	$scope.seatUpdater = function(){
@@ -205,21 +218,21 @@ app.controller("SeatController", function($scope, $http, $interval) {
 		}
 	}
 	$scope.getHelp = function(request){
-		//console.log(request.store)
+		// console.log(request.store)
 		$http.get("/helpRequest",{
 			params: {id: request.id}
 		}).success(function(){
 			$scope.getYourRequests();
 			$scope.getList();
-			//alert("Task Returned");
+			// alert("Task Returned");
 		}).error(function(){
 			alert("Request failed");
 		})
 	}
 	
 	$scope.helpCheck = function(request){
-		console.log(request);
-		if(!request.helpRequest && !request.beingHelped && !request.bathroomBreak){
+		// xconsole.log(request);
+		if(!request.helpRequest && !request.beingHelped && request.type != "C35"){
 			return true;
 		}else{
 			return false;
@@ -246,6 +259,15 @@ app.controller("SeatController", function($scope, $http, $interval) {
 			params: { number: num}
 		}).success(function(data){
 			$scope.getAdvisoryLevel();
+		}).error(function(){
+			alert("Group Change Failed");
+		})
+	}
+	
+	$scope.requestRPH=function(){
+		$http.get("/addRPHRequest",{
+			params: { seat: $scope.realSeat}
+		}).success(function(data){
 		}).error(function(){
 			alert("Group Change Failed");
 		})
