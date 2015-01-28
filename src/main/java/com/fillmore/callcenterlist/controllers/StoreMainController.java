@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -251,6 +252,7 @@ public class StoreMainController {
 
 	@RequestMapping("/saveAccount")
 	public void saveAccount(@RequestBody Account account) {
+		account.setPassword(new ShaPasswordEncoder(256).encodePassword(account.getUsername(), null));
 		accountRepository.save(account);
 	}
 
@@ -338,7 +340,7 @@ public class StoreMainController {
 		return storeRepository.findAll();
 	}
 	
-	@RequestMapping("/addRPHRequest")
+	/*@RequestMapping("/addRPHRequest")
 	public void addRPHrequest(@RequestParam("seat") String seatNum) {
 		boolean preRequested = false;
 		List<ReliefRequest> currentList = requestRepository.findUnactionedRPHRequests();
@@ -388,6 +390,6 @@ public class StoreMainController {
 		request.addStamp(stamp);
 		stampRepository.save(stamp);
 		requestRepository.save(request);
-	}
+	}*/
 	
 }

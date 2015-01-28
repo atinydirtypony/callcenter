@@ -48,8 +48,6 @@
 									href="#">Edit Stores</a></li>
 								<li sec:authorize="principal.getCert('')" ng-click="view ='accountEdit'" ng-class="{'active': view == 'accountEdit'}"><a
 									href="#">Edit Accounts</a></li>
-								<li sec:authorize="principal.getCert('Reports')" ng-click="view ='reporting'"
-									ng-class="{'active': view == 'reporting'}"><a href="#">Reporting</a></li>
 							</ul>
 							<ul class="nav navbar-nav navbar-right">
 								<li sec:authorize="principal.getCert('')"
@@ -58,9 +56,6 @@
 								<li sec:authorize="principal.getCert('')"
 									ng-click="view ='bulletin'"
 									ng-class="{'active': view == 'bulletin'}"><a href="#">Bulletins</a></li>
-								<li sec:authorize="principal.getCert('')"
-									ng-click="view ='rphhelp'"
-									ng-class="{'active': view == 'rphhelp'}"><a href="#">RPH Requests</a></li>
 							</ul>
 						</div>
 						<!-- /.navbar-collapse -->
@@ -109,33 +104,7 @@
 					</ul>
 				</div>
 				
-				<!-- RPH Request Content -->
-				<div ng-controller="RPHController" class="home_content card" ng-if="view=='rphhelp'">
-					<h2 class="page-header">RPH Requests</h2>
-					<div class = "row">
-						<h3 class="page-header" style="padding-left: 4%;">Seats Requesting an RPH</h3>
-						
-							<div class="row">
-							<ul>
-								<li class = "cols-xs-2" style="list-style-type: none; float:left; padding:4px;" ng-repeat="request in RPHList"><pre>{{displayRequest(request)}}</pre>
-								</li>
-							</ul>
-							</div>
-							<button class="btn btn-warning col-xs-offset-4 col-xs-4" ng-click="takeRequest()">Get
-							Request</button>
-					</div>
-
-					<div class = "row">
-					
-						<h3 style="padding-left: 4%;" class="page-header">Your Active Relief Requests</h3>
-							<ul>
-								<li class="col-xs-3" ng-repeat="request in yourRequests">{{displayRequest(request)}}
-									<button style="padding: 4px;" class="btn btn-success"
-										ng-click="finishRPHRequest(request.id)">Finish</button>
-								</li>
-							</ul>
-					</div>
-				</div>
+				
 
 				<!-- Seat Content -->
 				<div class="seat_content card" ng-if="view=='seat'"
@@ -166,10 +135,9 @@
 					
 					
 					<div class="row">
-						<button class = "btn btn-danger col-xs-2 col-xs-offset-2" ng-click="requestRPH()" ng-if="realSeat!=null">Request RPH</button>
 						<button class="btn btn-danger col-xs-offset-4 col-xs-2" ng-click="C35()"
 							ng-if="!isRFR &amp;&amp; getSeat() != null">Request C35</button>
-						<button class="btn btn-warning col-xs-offset-1 col-xs-2" ng-click="rfCall()" ng-if="isRFR">Get
+						<button class="btn btn-warning col-xs-offset-3 col-xs-2" ng-click="rfCall()" ng-if="isRFR">Get
 							Request</button>
 						<button class="btn btn-primary col-xs-offset-1 col-xs-2" ng-click="storeCallClick()"
 							ng-if="isRFR">Store Call</button>
@@ -308,24 +276,6 @@
 					      <input ng-model="account.lastName" type="text" class="form-control" id="lastName"/>
 					    </div>
 					</div>
-					
-					<div class="checkbox">
-						<label>
-							<input ng-model="account.callsCert" type="checkbox">Calls</input>
-						</label>
-					</div>
-					
-					<div class="checkbox">
-						<label>
-							<input ng-model="account.dataEntryCert" type="checkbox">Data Entry</input>
-						</label>
-					</div>
-					
-					<div class="checkbox">
-						<label>
-							<input ng-model="account.reportCert" type="checkbox">Reports</input>
-						</label>
-					</div>
 
 					<div class="row">
 						<button class="btn btn-primary col-xs-6 col-xs-offset-3" ng-click="saveAccount()">Save Account</button>
@@ -402,13 +352,6 @@
 
 				</div>
 
-				<!-- Reporting Content -->
-				<div class="reporting_content card"
-					sec:authorize="principal.getCert('Reports')"
-					ng-if="view=='reporting'">
-					<h2 class="page-header">Reporting</h2>
-					<p class="lead">All reporting goes here</p>
-				</div>
 
 			</div>
 
