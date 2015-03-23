@@ -255,6 +255,11 @@ public class StoreMainController {
 		account.setPassword(new ShaPasswordEncoder(256).encodePassword(account.getUsername(), null));
 		accountRepository.save(account);
 	}
+	
+	@RequestMapping("/newAccount")
+	public void newAccount(@RequestBody Account account) {
+		
+	}
 
 	@RequestMapping("/lastCheckedList")
 	public List<Store> getLastCheckedOrder() {
@@ -292,7 +297,7 @@ public class StoreMainController {
 		Bulletin bullet = bulletinRepository.findById(id);
 		bullet.setAlert(alert);
 		long theFuture = System.currentTimeMillis()
-				+ (86400 * 7 * 1000 * (long) life);
+				+ (86400 * 1000 * (long) life);
 		log.info(life);
 		Date weeks = new Date(theFuture);
 		bullet.setExpires(weeks);

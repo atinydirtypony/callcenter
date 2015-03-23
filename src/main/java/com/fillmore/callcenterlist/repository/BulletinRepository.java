@@ -13,4 +13,5 @@ public interface BulletinRepository extends CrudRepository<Bulletin, Integer> {
 	public Bulletin findById(int id);
 	
 	public List<Bulletin> findByExpired(boolean expired);
+	 
 }

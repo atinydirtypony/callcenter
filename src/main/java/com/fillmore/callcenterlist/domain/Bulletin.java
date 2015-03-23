@@ -68,6 +68,12 @@ public class Bulletin {
 		this.alert = alert;
 	}
 	
+	public void checkExpire(){
+		Date currentDate = new Date();
+		if(this.getExpires().before(currentDate)){
+			this.setExpired(true);
+		}
+	}
 	
 	
 }

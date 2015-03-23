@@ -1,5 +1,7 @@
 package com.fillmore.callcenterlist;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -35,5 +37,9 @@ public class Scheduling {
 	@Scheduled(cron ="0 0 22 * * *")
 	public void bulletinExpCheck(){
 		advisoryLevel.reset();
+		List<Bulletin> bulletins = bulletinRepository.findByExpired(false);
+		for(Bulletin bullet: bulletins){
+			bullet.checkExpire();
+		}
 	}
 }
