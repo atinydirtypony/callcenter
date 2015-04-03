@@ -28,7 +28,7 @@
 				<div class="col-md-3 pull-right" style="margin-top:50px;">
 					<span sec:authentication = "principal.firstName" ></span>
 					<span sec:authentication = "principal.lastName" ></span>
-					<button><a href= "/logout">Logout</a></button>
+					<button class="btn btn-link"><a href= "/logout">Logout</a></button>
 				</div>
 			</div>
 		</div>
@@ -44,16 +44,16 @@
 									href="#">Home</a></li>
 								<li ng-click="view ='seat'" ng-class="{'active': view == 'seat'}"><a
 									href="#">Tasks</a></li>
-								<li sec:authorize="principal.getCert('')" ng-click="view ='edit'" ng-class="{'active': view == 'edit'}"><a
+								<li sec:authorize="principal.getCert('LT')" ng-click="view ='edit'" ng-class="{'active': view == 'edit'}"><a
 									href="#">Edit Stores</a></li>
-								<li sec:authorize="principal.getCert('')" ng-click="view ='accountEdit'" ng-class="{'active': view == 'accountEdit'}"><a
+								<li sec:authorize="principal.getCert('LT')" ng-click="view ='accountEdit'" ng-class="{'active': view == 'accountEdit'}"><a
 									href="#">Edit Accounts</a></li>
 							</ul>
 							<ul class="nav navbar-nav navbar-right">
-								<li sec:authorize="principal.getCert('')"
+								<li sec:authorize="principal.getCert('RPH')"
 									ng-click="view ='admin'"
 									ng-class="{'active': view == 'admin'}"><a href="#">Administration</a></li>
-								<li sec:authorize="principal.getCert('')"
+								<li sec:authorize="principal.getCert('RPH')"
 									ng-click="view ='bulletin'"
 									ng-class="{'active': view == 'bulletin'}"><a href="#">Bulletins</a></li>
 							</ul>
@@ -89,6 +89,7 @@
 						</div>
 					</div>
 				</div>
+				
 			</div>
 
 			<div class="col-sm-8">
@@ -190,7 +191,7 @@
 					
 				</div>
 				
-				<div sec:authorize="principal.getCert('')" ng-controller="BulletinController" class="bulletin_content card" style="height:600px;" ng-if="view=='bulletin'">
+				<div sec:authorize="principal.getCert('RPH')" ng-controller="BulletinController" class="bulletin_content card" style="height:600px;" ng-if="view=='bulletin'">
 					<h2 class="page-header">Bulletins</h2>
 					<div class="form-group col-xs-5">
 					    <div class="input-group">
@@ -224,7 +225,7 @@
 				</div>
 
 				<!-- Admin Content -->
-				<div sec:authorize="principal.getCert('')" ng-controller="AdminController" class="admin_content card" ng-if="view=='admin'">
+				<div sec:authorize="principal.getCert('RPH')" ng-controller="AdminController" class="admin_content card" ng-if="view=='admin'">
 					<h2 class="page-header">Call Center Administration</h2>
 					    <div class="col-sm-9" style="padding-bottom:10px">
 					      <input ng-model="set_cutOff" type="text" class="form-control" id="set_cutOff" placeholder="Cut Off Number"/>
@@ -252,7 +253,7 @@
 				</div>
 
 				<!-- Account Edit Content -->
-				<div sec:authorize="principal.getCert('')" class="accountEdit_content card" ng-if="view=='accountEdit'"
+				<div sec:authorize="principal.getCert('LT')" class="accountEdit_content card" ng-if="view=='accountEdit'"
 					ng-controller="EditAccounts">
 					<h2 class="page-header">Edit Accounts</h2>
 					
@@ -281,6 +282,16 @@
 					      <input ng-model="account.lastName" type="text" class="form-control" id="lastName"/>
 					    </div>
 					</div>
+					
+					<div sec:authorize="principal.getCert('RPH')" class="row">
+						
+						<h5 class="col-sm-5">Current Role:</h5>
+						<button class= "btn col-xs-2" ng-click ="typeClick()" ng-class="userClass()">{{getRole()}}</button>	
+						
+					</div>
+					
+					<br />
+					
 
 					<div class="row">
 						<button class="btn btn-primary col-xs-6 col-xs-offset-3" ng-click="saveAccount()">Save Account</button>
@@ -289,7 +300,7 @@
 				</div>
 					
 					<!-- Edit Content -->
-				<div sec:authorize="principal.getCert('')" class="edit_content card" ng-if="view=='edit'"
+				<div sec:authorize="principal.getCert('LT')" class="edit_content card" ng-if="view=='edit'"
 					ng-controller="EditStores">
 					<h2 class="page-header">Edit Stores</h2>
 					

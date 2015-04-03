@@ -88,18 +88,21 @@ public class Account implements UserDetails {
 	
 	public boolean getCert(String type) {
 		//log.info(type);
-		if(!this.role.equals("USER")){
-			return true;
+		if(this.role.equals("USER")){
+			return false;
 		}else{
-			if(type.equals( "Calls")){
-				//log.info(this.isCallsCert());
-				return this.isCallsCert();
-			}else if(type.equals("Reports")){
-				//log.info(this.isReportCert());
-				return this.isReportCert();
-			}else if(type.equals("DataEntry")){
-				//log.info(this.isDataEntryCert());
-				return this.isDataEntryCert();
+			if(type.equals("LT")){
+				if(this.role.equals("LT") || this.role.equals("RPH")){
+					return true;
+				}else{
+					return false;
+				}
+			}else if(type.equals("RPH")){
+				if(this.role.equals("RPH")){
+					return true;
+				}else{
+					return false;
+				}
 			}else{
 				return false;
 			}

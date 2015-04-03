@@ -1,16 +1,22 @@
 package com.fillmore.callcenterlist.domain;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.annotations.Type;
+
+import com.fillmore.callcenterlist.controllers.StoreMainController;
 
 
 @Entity
 public class Bulletin {
+	private static final Log log = LogFactory.getLog(Bulletin.class);
 	
 	@Id
 	@GeneratedValue
@@ -47,7 +53,12 @@ public class Bulletin {
 		return expires;
 	}
 	public void setExpires(Date expires) {
-		this.expires = expires;
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(expires);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.SECOND, 0);
+		this.expires = calendar.getTime();
 	}
 	public boolean isExpired() {
 		return expired;
@@ -70,7 +81,9 @@ public class Bulletin {
 	
 	public void checkExpire(){
 		Date currentDate = new Date();
+		log.info(this.getExpires().before(currentDate));
 		if(this.getExpires().before(currentDate)){
+			
 			this.setExpired(true);
 		}
 	}

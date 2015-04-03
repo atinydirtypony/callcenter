@@ -252,13 +252,27 @@ public class StoreMainController {
 
 	@RequestMapping("/saveAccount")
 	public void saveAccount(@RequestBody Account account) {
-		account.setPassword(new ShaPasswordEncoder(256).encodePassword(account.getUsername(), null));
+		log.info("yep");
 		accountRepository.save(account);
 	}
 	
 	@RequestMapping("/newAccount")
 	public void newAccount(@RequestBody Account account) {
-		
+		Account newAccount = new Account();
+		newAccount.setUsername(account.getUsername());
+		newAccount.setPassword(new ShaPasswordEncoder(256).encodePassword(account.getUsername(), null));
+		newAccount.setRole(account.getRole());
+		newAccount.setFirstName(account.getFirstName());
+		newAccount.setLastName(account.getLastName());
+		newAccount.setEnabled(true);
+		accountRepository.save(newAccount);
+	}
+	
+	@RequestMapping("/resetPassword")
+	public void resetPassword(@RequestParam("id") String name){
+		Account account = accountRepository.findByUsername(name);
+		account.setPassword(new ShaPasswordEncoder(256).encodePassword(account.getUsername(), null));
+		accountRepository.save(account);
 	}
 
 	@RequestMapping("/lastCheckedList")
@@ -283,9 +297,9 @@ public class StoreMainController {
 		bullet.setName(accountRepository.findByUsername(
 				SecurityContextHolder.getContext().getAuthentication()
 						.getName()).getFullName());
-		long theFuture = System.currentTimeMillis() + (86400 * 7 * 1000 * 2);
-		Date twoWeeks = new Date(theFuture);
-		bullet.setExpires(twoWeeks);
+		long theFuture = System.currentTimeMillis() + (86400 * 1000)+ 1;
+		Date oneDay = new Date(theFuture);
+		bullet.setExpires(oneDay);
 		bulletinRepository.save(bullet);
 		return bullet.getId();
 

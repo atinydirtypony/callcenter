@@ -23,6 +23,11 @@ public interface RequestRepository extends CrudRepository<ReliefRequest, Integer
 	
 	@Query("Select rr from ReliefRequest rr inner join rr.stamps s " +
 			" where s.time = (select max(s2.time) from ReliefRequest rr2 inner join rr2.stamps s2 where rr2.id = rr.id)" + 
+			" and s.type = 'ACTIONED' and s.type != 'FUFILLED' and rr.type != 'RPH'")
+	public List<ReliefRequest> findUnfufilledRequests();
+	
+	@Query("Select rr from ReliefRequest rr inner join rr.stamps s " +
+			" where s.time = (select max(s2.time) from ReliefRequest rr2 inner join rr2.stamps s2 where rr2.id = rr.id)" + 
 			" and s.type != 'ACTIONED' and s.type != 'FUFILLED' and rr.type = 'RPH'")
 	public List<ReliefRequest> findUnactionedRPHRequests();
 	
